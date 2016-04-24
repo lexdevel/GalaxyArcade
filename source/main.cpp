@@ -4,6 +4,7 @@
 #include <OpenGL/OpenGL.h>
 #include <GLFW/glfw3.h>
 
+#include "util/GameTime.h"
 #include "graphics/SpriteRenderer.h"
 
 /**
@@ -35,14 +36,20 @@ int main(int, const char **)
 
     SpriteRenderer *spriteRenderer = SpriteRenderer::create();
 
-    Transformation transformation;
-    transformation.position = Vector2f(128.0f, 256.0f);
-    transformation.scale = Vector2f(64.0f, 64.0f);
-
     Image *image = Image::load("assets/player.png");
     assert(image);
 
     Texture2D *texture = GraphicsFactory::createTexture2D(image);
+
+    Sprite *sprite = new Sprite(texture);
+    sprite->transformation().position.x = 128.0f;
+    sprite->transformation().position.y = 800.0f - 128.0f;
+    sprite->transformation().scale.x = 32.0f;
+    sprite->transformation().scale.y = 32.0f;
+
+    // float elapsed = 0.0f;
+    float fpsCounter = 0.0f;
+    uint32_t fps = 0;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -50,19 +57,45 @@ int main(int, const char **)
             glfwSetWindowShouldClose(window, GL_TRUE);
         }
 
+        //                   elaped(1 = 1sec)   * 100 (1/10 sec) * speed
+        const float speed = GameTime::elapsed() * 100.0f * 4.0f;
+
         if (glfwGetKey(window, GLFW_KEY_LEFT)) {
-            transformation.position.x -= 2.0f;
+            sprite->transformation().position.x -= speed;
         }
 
         if (glfwGetKey(window, GLFW_KEY_RIGHT)) {
-            transformation.position.x += 2.0f;
+            sprite->transformation().position.x += speed;
         }
 
-        glClearColor(0.4f, 0.6f, 0.8f, 1.0f);
+        const Rect &spriteBounds = sprite->calculateBounds();
+        if (spriteBounds.x < 0.0f) {
+            sprite->transformation().position.x = 32.0f;
+        }
+        if (spriteBounds.x + spriteBounds.w + sprite->transformation().scale.x > 480.0f) {
+            sprite->transformation().position.x = 480.0f - sprite->transformation().scale.x;
+        }
+
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        spriteRenderer->render(transformation, texture);
+        spriteRenderer->render(sprite);
 
+#ifdef DEBUG
+
+        fpsCounter += GameTime::elapsed();
+        fps++;
+        if (fpsCounter >= 1.0f)
+        {
+            std::cout << "FPS: " << fps << std::endl;
+            fpsCounter = 0.0f;
+            fps = 0;
+        }
+
+#endif
+
+
+        GameTime::reset();
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

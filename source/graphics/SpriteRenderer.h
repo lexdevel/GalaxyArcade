@@ -4,6 +4,7 @@
 #include <memory>
 #include "../math/Transformation.h"
 #include "GraphicsFactory.h"
+#include "Sprite.h"
 
 struct SpriteVertex
 {
@@ -22,7 +23,7 @@ public:
 
     static SpriteRenderer *create();
 
-    void render(const Transformation &transformation, Texture2D *texture);
+    void render(Sprite *sprite);
 };
 
 #endif // SPRITERENDERER_H

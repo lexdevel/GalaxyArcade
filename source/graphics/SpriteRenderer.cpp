@@ -52,12 +52,12 @@ SpriteRenderer *SpriteRenderer::create()
     return spriteRenderer;
 }
 
-void SpriteRenderer::render(const Transformation &transformation, Texture2D *texture)
+void SpriteRenderer::render(Sprite *sprite)
 {
     this->m_renderShader->attach();
 
     Matrix projection = Matrix::orthographic(0.0f, 0.0f, 480.0f, 800.0f);
-    Matrix transformationMatrix = transformation.createTransformationMatrix();
+    Matrix transformationMatrix = sprite->transformation().createTransformationMatrix();
 
     GLint a_position = glGetAttribLocation(this->m_renderShader->identifier(), "a_position");
     GLint a_texcoord = glGetAttribLocation(this->m_renderShader->identifier(), "a_texcoord");
@@ -76,7 +76,7 @@ void SpriteRenderer::render(const Transformation &transformation, Texture2D *tex
     glVertexAttribPointer(a_texcoord, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), (void *)offsetof(SpriteVertex, texcoord));
     this->m_vertexBuffer->detach();
 
-    texture->attach();
+    sprite->texture()->attach();
     glActiveTexture(GL_TEXTURE0);
     glUniform1i(u_teximage, 0);
 
@@ -84,7 +84,7 @@ void SpriteRenderer::render(const Transformation &transformation, Texture2D *tex
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
     this->m_elementArray->detach();
 
-    texture->detach();
+    sprite->texture()->detach();
 
     glDisableVertexAttribArray(a_texcoord);
     glDisableVertexAttribArray(a_position);

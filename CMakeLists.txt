@@ -28,6 +28,7 @@ if (UNIX AND APPLE)
     set(LIBS ${LIBS} "-framework IOKit")
 endif()
 
+set(SOURCE ${SOURCE} source/util/GameTime.cpp)
 set(SOURCE ${SOURCE} source/util/FileReader.cpp)
 set(SOURCE ${SOURCE} source/util/Image.cpp)
 
@@ -37,12 +38,14 @@ set(SOURCE ${SOURCE} source/core/GraphicsObject.cpp)
 set(SOURCE ${SOURCE} source/math/Vector2f.cpp)
 set(SOURCE ${SOURCE} source/math/Matrix.cpp)
 set(SOURCE ${SOURCE} source/math/Transformation.cpp)
+set(SOURCE ${SOURCE} source/math/Rect.cpp)
 
 set(SOURCE ${SOURCE} source/graphics/ShaderProgram.cpp)
 set(SOURCE ${SOURCE} source/graphics/Texture2D.cpp)
 set(SOURCE ${SOURCE} source/graphics/Buffer.cpp)
 set(SOURCE ${SOURCE} source/graphics/GraphicsFactory.cpp)
 set(SOURCE ${SOURCE} source/graphics/SpriteRenderer.cpp)
+set(SOURCE ${SOURCE} source/graphics/Sprite.cpp)
 
 set(SOURCE ${SOURCE} source/main.cpp)
 add_executable(${PROJECT_NAME} ${SOURCE})

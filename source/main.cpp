@@ -6,6 +6,7 @@
 
 #include "util/GameTime.h"
 #include "graphics/SpriteRenderer.h"
+#include "graphics/TileRenderer.h"
 
 /**
  * Application entry point.
@@ -47,12 +48,46 @@ int main(int, const char **)
     sprite->transformation().scale.x = 32.0f;
     sprite->transformation().scale.y = 32.0f;
 
+
+
+    // Blow implementation
+    Image *blowImage = Image::load("assets/blow.png");
+    TileRenderer *tileRenderer = new TileRenderer(4, 4, GraphicsFactory::createTexture2D(blowImage));
+    tileRenderer->create();
+
+    Transformation blowTransformation;
+    blowTransformation.position.x = 128.0f;
+    blowTransformation.position.y = 128.0f;
+    blowTransformation.scale.x = 64.0f;
+    blowTransformation.scale.y = 64.0f;
+
+    Tile *blowTile = new Tile(Vector2f(0.0f, 0.0f));
+    const float blowTick = 1.0f / 60.0f;
+    float blowCounter = 0.0f;
+
     // float elapsed = 0.0f;
     float fpsCounter = 0.0f;
     uint32_t fps = 0;
 
     while (!glfwWindowShouldClose(window))
     {
+        blowCounter += GameTime::elapsed();
+        if (blowCounter > blowTick)
+        {
+            blowTile->texindex().x = blowTile->texindex().x + 1.0f;
+
+            if (blowTile->texindex().x > 4.0f) {
+                blowTile->texindex().x = 0.0f;
+                blowTile->texindex().y = blowTile->texindex().y + 1.0f;
+            }
+            if (blowTile->texindex().y > 4.0f) {
+                blowTile->texindex().x = 0.0f;
+                blowTile->texindex().y = 0.0f;
+            }
+
+            blowCounter = 0.0f;
+        }
+
         if (glfwGetKey(window, GLFW_KEY_ESCAPE)) {
             glfwSetWindowShouldClose(window, GL_TRUE);
         }
@@ -80,6 +115,8 @@ int main(int, const char **)
         glClear(GL_COLOR_BUFFER_BIT);
 
         spriteRenderer->render(sprite);
+
+        tileRenderer->render(blowTransformation, blowTile);
 
 #ifdef DEBUG
 

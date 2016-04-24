@@ -1,5 +1,6 @@
-//
-// Created by Alexander Logvinenko on 24.04.16.
-//
-
 #include "Tile.h"
+
+Tile::Tile(const Vector2f &texindex)
+    : m_texindex(texindex)
+{
+}

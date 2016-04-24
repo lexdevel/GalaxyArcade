@@ -46,9 +46,11 @@ set(SOURCE ${SOURCE} source/graphics/Buffer.cpp)
 set(SOURCE ${SOURCE} source/graphics/GraphicsFactory.cpp)
 set(SOURCE ${SOURCE} source/graphics/SpriteRenderer.cpp)
 set(SOURCE ${SOURCE} source/graphics/Sprite.cpp)
+set(SOURCE ${SOURCE} source/graphics/TileRenderer.cpp)
+set(SOURCE ${SOURCE} source/graphics/Tile.cpp)
 
 set(SOURCE ${SOURCE} source/main.cpp)
 add_executable(${PROJECT_NAME} ${SOURCE})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 
-file(COPY assets DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY assets/ DESTINATION ${CMAKE_BINARY_DIR}/assets)

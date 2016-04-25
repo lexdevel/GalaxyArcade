@@ -1,7 +1,14 @@
 #include "SpriteRenderer.h"
-#include <OpenGL/gl.h>
 
-SpriteRenderer *SpriteRenderer::create()
+SpriteRenderer::SpriteRenderer()
+{
+}
+
+SpriteRenderer::~SpriteRenderer()
+{
+}
+
+void SpriteRenderer::create()
 {
     const char *vertSource = ""
             "#ifdef GL_ES\n"
@@ -25,68 +32,82 @@ SpriteRenderer *SpriteRenderer::create()
             "void main() {\n"
             "    gl_FragColor = texture2D(u_teximage, v_texcoord);\n"
             "}";
-    const SpriteVertex vertexBufferData[] = {
-            { Vector2f(-1.0f,  1.0f), Vector2f(0.0f, 0.0f) },
-            { Vector2f( 1.0f,  1.0f), Vector2f(1.0f, 0.0f) },
-            { Vector2f( 1.0f, -1.0f), Vector2f(1.0f, 1.0f) },
-            { Vector2f(-1.0f, -1.0f), Vector2f(0.0f, 1.0f) }
+    const Vector2f vertexBufferData[] = {
+            Vector2f(-1.0f,  1.0f),
+            Vector2f( 1.0f,  1.0f),
+            Vector2f( 1.0f, -1.0f),
+            Vector2f(-1.0f, -1.0f)
     };
     const GLuint elementArrayData[] = {
             0, 1, 2, 2, 3, 0
     };
 
-    SpriteRenderer *spriteRenderer = new SpriteRenderer();
+    this->m_renderShader.reset(GraphicsFactory::createShaderProgram(vertSource, fragSource));
+    this->m_vertexBuffer.reset(GraphicsFactory::createBuffer(GL_ARRAY_BUFFER, 4 * sizeof(Vector2f), vertexBufferData));
+    this->m_coordsBuffer.reset(GraphicsFactory::createBuffer(GL_ARRAY_BUFFER, 0, nullptr));
+    this->m_elementArray.reset(GraphicsFactory::createBuffer(GL_ELEMENT_ARRAY_BUFFER, sizeof(elementArrayData), elementArrayData));
 
-    spriteRenderer->m_renderShader.reset(GraphicsFactory::createShaderProgram(vertSource, fragSource));
-    spriteRenderer->m_vertexBuffer.reset(GraphicsFactory::createBuffer(GL_ARRAY_BUFFER));
-    spriteRenderer->m_elementArray.reset(GraphicsFactory::createBuffer(GL_ELEMENT_ARRAY_BUFFER));
-
-    spriteRenderer->m_vertexBuffer->attach();
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertexBufferData), vertexBufferData, GL_STATIC_DRAW);
-    spriteRenderer->m_vertexBuffer->detach();
-
-    spriteRenderer->m_elementArray->attach();
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(elementArrayData), elementArrayData, GL_STATIC_DRAW);
-    spriteRenderer->m_elementArray->detach();
-
-    return spriteRenderer;
+    this->m_shaderParams.a_position = glGetAttribLocation(this->m_renderShader->identifier(), "a_position");
+    this->m_shaderParams.a_texcoord = glGetAttribLocation(this->m_renderShader->identifier(), "a_texcoord");
+    this->m_shaderParams.u_pvmatrix = glGetUniformLocation(this->m_renderShader->identifier(), "u_pvmatrix");
+    this->m_shaderParams.u_mvmatrix = glGetUniformLocation(this->m_renderShader->identifier(), "u_mvmatrix");
+    this->m_shaderParams.u_teximage = glGetUniformLocation(this->m_renderShader->identifier(), "u_teximage");
 }
 
-void SpriteRenderer::render(Sprite *sprite)
+void SpriteRenderer::initiate()
 {
-    this->m_renderShader->attach();
+    GLCALL(glUseProgram(this->m_renderShader->identifier()));
+    GLCALL(glEnableVertexAttribArray(this->m_shaderParams.a_position));
+    GLCALL(glEnableVertexAttribArray(this->m_shaderParams.a_texcoord));
+}
 
-    Matrix projection = Matrix::orthographic(0.0f, 0.0f, 480.0f, 800.0f);
-    Matrix transformationMatrix = sprite->transformation().createTransformationMatrix();
+void SpriteRenderer::render(Renderable *renderable)
+{
+    SpriteRegion *spriteRegion = dynamic_cast<SpriteRegion *>(renderable);
+    Sprite *sprite = dynamic_cast<Sprite *>(renderable);
 
-    GLint a_position = glGetAttribLocation(this->m_renderShader->identifier(), "a_position");
-    GLint a_texcoord = glGetAttribLocation(this->m_renderShader->identifier(), "a_texcoord");
-    GLint u_pvmatrix = glGetUniformLocation(this->m_renderShader->identifier(), "u_pvmatrix");
-    GLint u_mvmatrix = glGetUniformLocation(this->m_renderShader->identifier(), "u_mvmatrix");
-    GLint u_teximage = glGetUniformLocation(this->m_renderShader->identifier(), "u_teximage");
+    Vector2f coordsBufferData[] = {
+            Vector2f(0.0f, 0.0f),
+            Vector2f(1.0f, 0.0f),
+            Vector2f(1.0f, 1.0f),
+            Vector2f(0.0f, 1.0f)
+    };
 
-    glEnableVertexAttribArray(a_position);
-    glEnableVertexAttribArray(a_texcoord);
-
-    glUniformMatrix4fv(u_pvmatrix, 1, GL_FALSE, projection.data());
-    glUniformMatrix4fv(u_mvmatrix, 1, GL_FALSE, transformationMatrix.data());
+    if (spriteRegion)
+    {
+        // ToDo: Implement
+    }
 
     this->m_vertexBuffer->attach();
-    glVertexAttribPointer(a_position, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), (void *)offsetof(SpriteVertex, position));
-    glVertexAttribPointer(a_texcoord, 2, GL_FLOAT, GL_FALSE, sizeof(SpriteVertex), (void *)offsetof(SpriteVertex, texcoord));
+    GLCALL(glVertexAttribPointer(this->m_shaderParams.a_position, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
     this->m_vertexBuffer->detach();
 
-    sprite->texture()->attach();
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(u_teximage, 0);
+    this->m_coordsBuffer->attach();
+    GLCALL(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(Vector2f), coordsBufferData, GL_STATIC_DRAW));
+    GLCALL(glVertexAttribPointer(this->m_shaderParams.a_texcoord, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
+    this->m_coordsBuffer->detach();
+
+    // Matrix projection = Matrix::orthographic(0.0f, 0.0f, 480.0f, 800.0f);
+    Matrix projection = Matrix::orthographic(-240.0f, 400.0f, 240.0f, -400.0f);
+    Matrix transformation = sprite->transformation().createTransformationMatrix();
+
+    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_pvmatrix, 1, GL_FALSE, projection.data()));
+    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_mvmatrix, 1, GL_FALSE, transformation.data()));
 
     this->m_elementArray->attach();
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
-    this->m_elementArray->detach();
+    sprite->texture()->attach();
+    glActiveTexture(GL_TEXTURE0);
+    glUniform1i(this->m_shaderParams.u_teximage, 0);
+
+    GLCALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 
     sprite->texture()->detach();
+    this->m_elementArray->detach();
+}
 
-    glDisableVertexAttribArray(a_texcoord);
-    glDisableVertexAttribArray(a_position);
-    glUseProgram(0);
+void SpriteRenderer::submit()
+{
+    GLCALL(glDisableVertexAttribArray(this->m_shaderParams.a_texcoord));
+    GLCALL(glDisableVertexAttribArray(this->m_shaderParams.a_position));
+    GLCALL(glUseProgram(0));
 }

@@ -60,10 +60,14 @@ Texture2D *GraphicsFactory::createTexture2D(const Image *image)
     return new Texture2D(teximage);
 }
 
-Buffer *GraphicsFactory::createBuffer(GLenum target)
+Buffer *GraphicsFactory::createBuffer(GLenum target, unsigned int bufferDataLength, const void *bufferData)
 {
     GLuint buffer = 0;
+
     GLCALL(glGenBuffers(1, &buffer));
+    GLCALL(glBindBuffer(target, buffer));
+    GLCALL(glBufferData(target, bufferDataLength, bufferData, GL_STATIC_DRAW));
+    GLCALL(glBindBuffer(target, 0));
 
     return new Buffer(buffer, target);
 }

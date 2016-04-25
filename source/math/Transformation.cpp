@@ -1,5 +1,15 @@
 #include "Transformation.h"
 
+Transformation::Transformation()
+    : position(), scale()
+{
+}
+
+Transformation::Transformation(const Vector2f &position, const Vector2f &scale)
+    : position(position), scale(scale)
+{
+}
+
 Matrix Transformation::createTransformationMatrix() const
 {
     Matrix matrix = Matrix::identity();

@@ -8,9 +8,10 @@ struct Transformation
 {
 public:
     Vector2f position;
-    // float    rotation;   // No need for this game
     Vector2f scale;
 public:
+    Transformation();
+    Transformation(const Vector2f &position, const Vector2f &scale);
 
     Matrix createTransformationMatrix() const;
 };

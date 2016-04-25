@@ -1,29 +1,38 @@
 #ifndef SPRITERENDERER_H
 #define SPRITERENDERER_H
 
-#include <memory>
-#include "../math/Transformation.h"
-#include "GraphicsFactory.h"
-#include "Sprite.h"
+#include "../core/Renderer.h"
+#include "../math/Vector2f.h"
+#include "SpriteRegion.h"
 
-struct SpriteVertex
+struct SpriteRendererShaderParams
 {
 public:
-    Vector2f position;
-    Vector2f texcoord;
+    GLint   a_position = 0;
+    GLint   a_texcoord = 0;
+    GLint   u_pvmatrix = 0;
+    GLint   u_mvmatrix = 0;
+    GLint   u_teximage = 0;
 };
 
-class SpriteRenderer
+class SpriteRenderer : public Renderer
 {
 private:
-    std::unique_ptr<ShaderProgram>  m_renderShader;
-    std::unique_ptr<Buffer>         m_vertexBuffer;
-    std::unique_ptr<Buffer>         m_elementArray;
+    std::unique_ptr<Buffer>     m_vertexBuffer;
+    std::unique_ptr<Buffer>     m_coordsBuffer;
+    std::unique_ptr<Buffer>     m_elementArray;
+    SpriteRendererShaderParams  m_shaderParams;
 public:
+    SpriteRenderer();
+    virtual ~SpriteRenderer();
 
-    static SpriteRenderer *create();
+    virtual void create() override;
 
-    void render(Sprite *sprite);
+    virtual void initiate() override;
+
+    virtual void render(Renderable *renderable) override;
+
+    virtual void submit() override;
 };
 
 #endif // SPRITERENDERER_H

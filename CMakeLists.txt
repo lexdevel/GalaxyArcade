@@ -34,22 +34,24 @@ set(SOURCE ${SOURCE} source/util/Image.cpp)
 
 set(SOURCE ${SOURCE} source/core/Attachable.cpp)
 set(SOURCE ${SOURCE} source/core/GraphicsObject.cpp)
+set(SOURCE ${SOURCE} source/core/ShaderProgram.cpp)
+set(SOURCE ${SOURCE} source/core/Texture2D.cpp)
+set(SOURCE ${SOURCE} source/core/Buffer.cpp)
+set(SOURCE ${SOURCE} source/core/GraphicsFactory.cpp)
+set(SOURCE ${SOURCE} source/core/Renderable.cpp)
+set(SOURCE ${SOURCE} source/core/Renderer.cpp)
 
 set(SOURCE ${SOURCE} source/math/Vector2f.cpp)
 set(SOURCE ${SOURCE} source/math/Matrix.cpp)
 set(SOURCE ${SOURCE} source/math/Transformation.cpp)
 set(SOURCE ${SOURCE} source/math/Rect.cpp)
 
-set(SOURCE ${SOURCE} source/graphics/ShaderProgram.cpp)
-set(SOURCE ${SOURCE} source/graphics/Texture2D.cpp)
-set(SOURCE ${SOURCE} source/graphics/Buffer.cpp)
-set(SOURCE ${SOURCE} source/graphics/GraphicsFactory.cpp)
-set(SOURCE ${SOURCE} source/graphics/SpriteRenderer.cpp)
 set(SOURCE ${SOURCE} source/graphics/Sprite.cpp)
-set(SOURCE ${SOURCE} source/graphics/TileRenderer.cpp)
-set(SOURCE ${SOURCE} source/graphics/Tile.cpp)
+set(SOURCE ${SOURCE} source/graphics/SpriteRegion.cpp)
+set(SOURCE ${SOURCE} source/graphics/SpriteRenderer.cpp)
 
 set(SOURCE ${SOURCE} source/main.cpp)
+
 add_executable(${PROJECT_NAME} ${SOURCE})
 target_link_libraries(${PROJECT_NAME} ${LIBS})
 

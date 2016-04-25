@@ -19,7 +19,7 @@ Image *Image::load(const char *filePath)
     int imageH   = 0;
     int imageBpp = 0;
 
-    stbi_set_flip_vertically_on_load(1);
+    // stbi_set_flip_vertically_on_load(1);
     unsigned char *buffer = stbi_load(filePath, &imageW, &imageH, &imageBpp, 0);
 
     if (!buffer) {

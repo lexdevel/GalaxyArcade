@@ -19,14 +19,17 @@ public:
 
     /**
      *
+     * @param image
      */
     static Texture2D *createTexture2D(const Image *image);
 
     /**
      * Create the OpenGL buffer instance.
      * @param target The buffer target (GL_ARRAY_BUFFER / GL_ELEMENT_ARRAY_BUFFER)
+     * @param bufferDataLength
+     * @param bufferData
      */
-    static Buffer *createBuffer(GLenum target);
+    static Buffer *createBuffer(GLenum target, unsigned int bufferDataLength, const void *bufferData);
 };
 
 #endif // GRAPHICSFACTORY_H

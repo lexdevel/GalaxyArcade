@@ -1,7 +1,11 @@
 #include "Sprite.h"
 
-Sprite::Sprite(Texture2D *texture)
-    : m_texture(texture)
+Sprite::Sprite(const Transformation &transformation, Texture2D *texture)
+    : m_transformation(transformation), m_texture(texture)
+{
+}
+
+Sprite::~Sprite()
 {
 }
 

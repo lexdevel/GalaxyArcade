@@ -8,7 +8,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
     add_definitions(-DDEBUG)
     add_definitions(-O0)
 else()
-    add_definitions(-O4)
+    add_definitions(-O3)
 endif()
 
 add_definitions(-std=c++11)

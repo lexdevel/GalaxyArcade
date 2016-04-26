@@ -1,7 +1,7 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include "../core/GraphicsObject.h"
+#include "../GraphicsObject.h"
 
 class Buffer : public GraphicsObject
 {

@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include "Sprite.h"
 #include "../math/Transformation.h"
-#include "../core/Texture2D.h"
 
 class SpriteRegion : public Sprite
 {

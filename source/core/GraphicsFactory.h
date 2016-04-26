@@ -2,9 +2,9 @@
 #define GRAPHICSFACTORY_H
 
 #include "../util/Image.h"
-#include "ShaderProgram.h"
-#include "Texture2D.h"
-#include "Buffer.h"
+#include "opengl/ShaderProgram.h"
+#include "opengl/Texture2D.h"
+#include "opengl/Buffer.h"
 
 class GraphicsFactory
 {

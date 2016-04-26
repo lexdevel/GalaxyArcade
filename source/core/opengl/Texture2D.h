@@ -1,7 +1,7 @@
 #ifndef TEXTURE2D_H
 #define TEXTURE2D_H
 
-#include "../core/GraphicsObject.h"
+#include "../GraphicsObject.h"
 
 /**
  *

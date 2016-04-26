@@ -1,7 +1,7 @@
 #ifndef SHADERPROGRAM_H
 #define SHADERPROGRAM_H
 
-#include "../core/GraphicsObject.h"
+#include "../GraphicsObject.h"
 
 /**
  * The shader program class.

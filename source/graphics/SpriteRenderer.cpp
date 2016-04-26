@@ -66,16 +66,19 @@ void SpriteRenderer::render(Renderable *renderable)
     SpriteRegion *spriteRegion = dynamic_cast<SpriteRegion *>(renderable);
     Sprite *sprite = dynamic_cast<Sprite *>(renderable);
 
-    Vector2f coordsBufferData[] = {
-            Vector2f(0.0f, 0.0f),
-            Vector2f(1.0f, 0.0f),
-            Vector2f(1.0f, 1.0f),
-            Vector2f(0.0f, 1.0f)
-    };
+    Vector2f coordsBufferData[] = { Vector2f(0.0f, 0.0f), Vector2f(1.0f, 0.0f), Vector2f(1.0f, 1.0f), Vector2f(0.0f, 1.0f) };
 
     if (spriteRegion)
     {
-        // ToDo: Implement
+        float x = spriteRegion->x() == 0 ? 0.0f : 1.0f / static_cast<float>(spriteRegion->rows()) * static_cast<float>(spriteRegion->x());
+        float y = spriteRegion->y() == 0 ? 0.0f : 1.0f / static_cast<float>(spriteRegion->cols()) * static_cast<float>(spriteRegion->y());
+        float w = 1.0f / static_cast<float>(spriteRegion->rows());
+        float h = 1.0f / static_cast<float>(spriteRegion->cols());
+
+        coordsBufferData[0] = Vector2f(x,     y);
+        coordsBufferData[1] = Vector2f(x + w, y);
+        coordsBufferData[2] = Vector2f(x + w, y + h);
+        coordsBufferData[3] = Vector2f(x,     y + h);
     }
 
     this->m_vertexBuffer->attach();

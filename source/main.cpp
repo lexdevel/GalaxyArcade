@@ -1,8 +1,10 @@
 #include <iostream>
+#include <math.h>
 #include <GLFW/glfw3.h>
 
 #include "util/GameTime.h"
 #include "graphics/SpriteRenderer.h"
+#include "graphics/SpriteAnimation.h"
 
 /**
  * Application entry point.
@@ -31,16 +33,21 @@ int main(int, const char **)
     std::shared_ptr<Image> imageBlow = std::shared_ptr<Image>(Image::load("assets/blow.png"));
 
     std::unique_ptr<Sprite> player = std::unique_ptr<Sprite>(
-            new Sprite(Transformation(Vector2f(0.0f, 0.0f), Vector2f(32.0f, 32.0f)),
+            new Sprite(Transformation(Vector2f(0.0f, -128.0f), Vector2f(32.0f, 32.0f)),
                        GraphicsFactory::createTexture2D(imagePlayer.get())
             )
     );
-    std::unique_ptr<SpriteRegion> blow = std::unique_ptr<SpriteRegion>(
-            new SpriteRegion(0, 0, 4, 4,
-                             Transformation(),
-                             GraphicsFactory::createTexture2D(imageBlow.get())
-            )
-    );
+
+    std::shared_ptr<Texture2D> blowTexture = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageBlow.get()));
+    SpriteAnimation spriteAnimation = SpriteAnimation(1.0f / 60.0f);
+
+    for (unsigned int y = 0; y < 4; y++) {
+        for (unsigned int x = 0; x < 5; x++) {
+            spriteAnimation.push(new SpriteRegion(5, 4, x, y,
+                                                  Transformation(Vector2f(0.0f, 32.0f), Vector2f(64.0f, 64.0f)),
+                                                  blowTexture.get()));
+        }
+    }
 
     std::unique_ptr<SpriteRenderer> spriteRenderer = std::unique_ptr<SpriteRenderer>(new SpriteRenderer);
     spriteRenderer->create();
@@ -49,16 +56,36 @@ int main(int, const char **)
     std::cout << "OpenGL: " << (const char *)glGetString(GL_VERSION) << std::endl;
 #endif
 
+    const float playerSpeed = 2.0f;
+
     float fpsCounter = 0.0f;
     uint32_t fps = 0;
 
     while (!glfwWindowShouldClose(window))
     {
+        if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+            glfwSetWindowShouldClose(window, GL_TRUE);
+        }
+
+        float elapsed = GameTime::elapsed();
+        spriteAnimation.update(elapsed);
+
+        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+            player->transformation().position.x -= ::ceilf(playerSpeed * (100.0f * elapsed));
+        }
+        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+            player->transformation().position.x += ::ceilf(playerSpeed * (100.0f * elapsed));
+        }
+
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         spriteRenderer->initiate();
         spriteRenderer->render(player.get());
+        spriteRenderer->submit();
+
+        spriteRenderer->initiate();
+        spriteRenderer->render(spriteAnimation.getCurrentSpriteRegion());
         spriteRenderer->submit();
 
 #ifdef DEBUG

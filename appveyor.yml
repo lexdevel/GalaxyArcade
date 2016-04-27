@@ -1,6 +1,10 @@
 environment:
   matrix:
-    - generator: "MinGW Makefiles"
-      configuration: "Debug"
-    - generator: "MinGW Makefiles"
-      configuration: "Release"
+    - CMAKE_BUILD_TYPE: "Debug"
+    - CMAKE_BUILD_TYPE: "Release"
+build_script:
+  - set PATH=C:\MinGW\bin;%PATH%
+  - mkdir build
+  - cd build
+  - cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ..
+  - cmake --build .

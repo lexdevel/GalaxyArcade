@@ -1,6 +1,4 @@
 #include "ShaderProgram.h"
-#include <OpenGL/gl.h>
-#include <assert.h>
 
 ShaderProgram::ShaderProgram(const GLuint &identifier)
     : GraphicsObject(identifier)

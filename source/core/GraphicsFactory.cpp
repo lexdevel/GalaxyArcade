@@ -1,5 +1,4 @@
 #include "GraphicsFactory.h"
-#include <assert.h>
 
 ShaderProgram *GraphicsFactory::createShaderProgram(const char *vertSource, const char *fragSource)
 {
@@ -13,22 +12,6 @@ ShaderProgram *GraphicsFactory::createShaderProgram(const char *vertSource, cons
 
     GLCALL(glCompileShader(vert));
     GLCALL(glCompileShader(frag));
-
-    GLint status = GL_FALSE;
-
-    glGetShaderiv(vert, GL_COMPILE_STATUS, &status);
-    // assert(status == GL_TRUE);
-
-    glGetShaderiv(frag, GL_COMPILE_STATUS, &status);
-    // assert(status == GL_TRUE);
-
-    int length = 0;
-    char info[1024];
-    glGetShaderInfoLog(frag, 1024, &length, info);
-
-    std::cout << info << std::endl;
-
-    // ToDo: Check shader compilation status
 
     GLCALL(glAttachShader(prog, vert));
     GLCALL(glAttachShader(prog, frag));

@@ -1,0 +1,9 @@
+environment:
+  matrix:
+    - CMAKE_BUILD_TYPE: Debug
+    - CMAKE_BUILD_TYPE: Release
+build_script:
+  - mkdir build
+  - cd build
+  - cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=%CMAKE_BUILD_TYPE% ..
+  - cmake --build .

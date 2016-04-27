@@ -1,5 +1,4 @@
 #include "Buffer.h"
-#include <OpenGL/gl.h>
 
 Buffer::Buffer(const GLuint &identifier, GLenum target)
     : GraphicsObject(identifier), m_target(target)

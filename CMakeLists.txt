@@ -28,6 +28,19 @@ if (UNIX AND APPLE)
     set(LIBS ${LIBS} "-framework IOKit")
 endif()
 
+if (WIN32 AND MINGW)
+    add_definitions(-DOS_WIN32)
+    link_directories(vendor/glfw/lib/win32)
+
+    include_directories(vendor/glxw/include)
+    link_directories(vendor/glxw/lib/win32)
+
+    set(LIBS ${LIBS} glxw)
+    set(LIBS ${LIBS} opengl32)
+    set(LIBS ${LIBS} glu32)
+    set(LIBS ${LIBS} gdi32)
+endif()
+
 set(SOURCE ${SOURCE} source/util/GameTime.cpp)
 set(SOURCE ${SOURCE} source/util/FileReader.cpp)
 set(SOURCE ${SOURCE} source/util/Image.cpp)

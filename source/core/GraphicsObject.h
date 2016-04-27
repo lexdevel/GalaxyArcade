@@ -5,7 +5,12 @@
     #include <OpenGL/gl.h>
 #endif
 
+#ifdef OS_WIN32
+    #include <GLXW/glxw.h>
+#endif
+
 #include <iostream>
+#include <memory>
 #include "Attachable.h"
 
 #ifdef DEBUG

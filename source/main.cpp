@@ -1,10 +1,9 @@
-#include <iostream>
-#include <math.h>
-#include <GLFW/glfw3.h>
-
 #include "util/GameTime.h"
 #include "graphics/SpriteRenderer.h"
 #include "graphics/SpriteAnimation.h"
+
+#include <math.h>
+#include <GLFW/glfw3.h>
 
 /**
  * Application entry point.
@@ -22,7 +21,16 @@ int main(int, const char **)
 
     GLFWwindow *window = glfwCreateWindow(480, 800, "Galaxy Arcade", nullptr, nullptr);
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
+    // glfwSwapInterval(1);
+
+#ifdef OS_WIN32
+    if (glxwInit() != 0)
+    {
+        std::cerr << "Error: cannot init glxw!" << std::endl;
+        glfwDestroyWindow(window);
+        glfwTerminate();
+    }
+#endif
 
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);

@@ -1,8 +1,6 @@
 #include "util/GameTime.h"
 #include "graphics/SpriteRenderer.h"
 #include "graphics/SpriteAnimation.h"
-
-#include <math.h>
 #include <GLFW/glfw3.h>
 
 /**

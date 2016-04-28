@@ -9,6 +9,7 @@ if (CMAKE_BUILD_TYPE STREQUAL Debug)
     add_definitions(-O0)
 else()
     add_definitions(-O3)
+    add_definitions(-D__NO_INLINE__) # Fix "_hypot" issue with math.h/cmath and -O3 optimization level
 endif()
 
 add_definitions(-std=c++11)

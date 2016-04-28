@@ -64,10 +64,14 @@ int main(int, const char **)
     std::cout << "OpenGL: " << (const char *)glGetString(GL_VERSION) << std::endl;
 #endif
 
-    const float playerSpeed = 2.0f;
+    const float playerSpeed = 8.0f;
 
     float fpsCounter = 0.0f;
     uint32_t fps = 0;
+
+    const float upsFreq = 1.0f / 100.0f;
+    float upsCounter = 0.0f;
+    uint32_t ups = 0;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -76,24 +80,36 @@ int main(int, const char **)
         }
 
         float elapsed = GameTime::elapsed();
-        spriteAnimation.update(elapsed);
 
-        if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
-            player->transformation().position.x -= ::ceilf(playerSpeed * (100.0f * elapsed));
-        }
-        if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
-            player->transformation().position.x += ::ceilf(playerSpeed * (100.0f * elapsed));
+        upsCounter += elapsed;
+        if (upsCounter >= upsFreq)
+        {
+            // Update...
+
+            float delta = upsCounter;
+            // ToDo: Update is still not smooth enough
+
+            spriteAnimation.update(delta);
+
+            if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
+                player->transformation().position.x -= playerSpeed * delta * 100.0f;
+            }
+            if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
+                player->transformation().position.x += playerSpeed * delta * 100.0f;
+            }
+
+            ups++;
+            upsCounter = 0.0f;
         }
 
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
         spriteRenderer->initiate();
-        spriteRenderer->render(player.get());
-        spriteRenderer->submit();
 
-        spriteRenderer->initiate();
+        spriteRenderer->render(player.get());
         spriteRenderer->render(spriteAnimation.getCurrentSpriteRegion());
+
         spriteRenderer->submit();
 
 #ifdef DEBUG
@@ -102,9 +118,11 @@ int main(int, const char **)
         fps++;
         if (fpsCounter >= 1.0f)
         {
-            std::cout << "FPS: " << fps << std::endl;
+            std::cout << "FPS: " << fps << ", UPS: " << ups << std::endl;
             fpsCounter = 0.0f;
+            upsCounter = 0.0f;
             fps = 0;
+            ups = 0;
         }
 
 #endif

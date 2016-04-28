@@ -47,18 +47,26 @@ void SpriteRenderer::create()
     this->m_coordsBuffer.reset(GraphicsFactory::createBuffer(GL_ARRAY_BUFFER, 0, nullptr));
     this->m_elementArray.reset(GraphicsFactory::createBuffer(GL_ELEMENT_ARRAY_BUFFER, sizeof(elementArrayData), elementArrayData));
 
-    this->m_shaderParams.a_position = glGetAttribLocation(this->m_renderShader->identifier(), "a_position");
-    this->m_shaderParams.a_texcoord = glGetAttribLocation(this->m_renderShader->identifier(), "a_texcoord");
-    this->m_shaderParams.u_pvmatrix = glGetUniformLocation(this->m_renderShader->identifier(), "u_pvmatrix");
-    this->m_shaderParams.u_mvmatrix = glGetUniformLocation(this->m_renderShader->identifier(), "u_mvmatrix");
-    this->m_shaderParams.u_teximage = glGetUniformLocation(this->m_renderShader->identifier(), "u_teximage");
+    this->m_shaderParams.a_position = static_cast<GLuint>(glGetAttribLocation(this->m_renderShader->identifier(), "a_position"));
+    this->m_shaderParams.a_texcoord = static_cast<GLuint>(glGetAttribLocation(this->m_renderShader->identifier(), "a_texcoord"));
+    this->m_shaderParams.u_pvmatrix = static_cast<GLuint>(glGetUniformLocation(this->m_renderShader->identifier(), "u_pvmatrix"));
+    this->m_shaderParams.u_mvmatrix = static_cast<GLuint>(glGetUniformLocation(this->m_renderShader->identifier(), "u_mvmatrix"));
+    this->m_shaderParams.u_teximage = static_cast<GLuint>(glGetUniformLocation(this->m_renderShader->identifier(), "u_teximage"));
 }
 
 void SpriteRenderer::initiate()
 {
     GLCALL(glUseProgram(this->m_renderShader->identifier()));
+
     GLCALL(glEnableVertexAttribArray(this->m_shaderParams.a_position));
     GLCALL(glEnableVertexAttribArray(this->m_shaderParams.a_texcoord));
+
+    this->m_vertexBuffer->attach();
+    GLCALL(glVertexAttribPointer(this->m_shaderParams.a_position, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
+    this->m_vertexBuffer->detach();
+
+    static const Matrix projection = Matrix::orthographic(-240.0f, 400.0f, 240.0f, -400.0f);
+    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_pvmatrix, 1, GL_FALSE, projection.data()));
 }
 
 void SpriteRenderer::render(Renderable *renderable)
@@ -66,7 +74,15 @@ void SpriteRenderer::render(Renderable *renderable)
     SpriteRegion *spriteRegion = dynamic_cast<SpriteRegion *>(renderable);
     Sprite *sprite = dynamic_cast<Sprite *>(renderable);
 
-    Vector2f coordsBufferData[] = { Vector2f(0.0f, 0.0f), Vector2f(1.0f, 0.0f), Vector2f(1.0f, 1.0f), Vector2f(0.0f, 1.0f) };
+    if (!sprite) {
+        // Render only sprites or derived from sprite instances...
+        return;
+    }
+
+    Vector2f coordsBufferData[] = {
+            Vector2f(0.0f, 0.0f), Vector2f(1.0f, 0.0f),
+            Vector2f(1.0f, 1.0f), Vector2f(0.0f, 1.0f)
+    };
 
     if (spriteRegion)
     {
@@ -81,26 +97,18 @@ void SpriteRenderer::render(Renderable *renderable)
         coordsBufferData[3] = Vector2f(x,     y + h);
     }
 
-    this->m_vertexBuffer->attach();
-    GLCALL(glVertexAttribPointer(this->m_shaderParams.a_position, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
-    this->m_vertexBuffer->detach();
+    Matrix transformation = sprite->transformation().createTransformationMatrix();
+    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_mvmatrix, 1, GL_FALSE, transformation.data()));
 
     this->m_coordsBuffer->attach();
     GLCALL(glBufferData(GL_ARRAY_BUFFER, 4 * sizeof(Vector2f), coordsBufferData, GL_STATIC_DRAW));
     GLCALL(glVertexAttribPointer(this->m_shaderParams.a_texcoord, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
     this->m_coordsBuffer->detach();
 
-    // Matrix projection = Matrix::orthographic(0.0f, 0.0f, 480.0f, 800.0f);
-    Matrix projection = Matrix::orthographic(-240.0f, 400.0f, 240.0f, -400.0f);
-    Matrix transformation = sprite->transformation().createTransformationMatrix();
-
-    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_pvmatrix, 1, GL_FALSE, projection.data()));
-    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_mvmatrix, 1, GL_FALSE, transformation.data()));
-
     this->m_elementArray->attach();
     sprite->texture()->attach();
-    glActiveTexture(GL_TEXTURE0);
-    glUniform1i(this->m_shaderParams.u_teximage, 0);
+    GLCALL(glActiveTexture(GL_TEXTURE0));
+    GLCALL(glUniform1i(this->m_shaderParams.u_teximage, 0));
 
     GLCALL(glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr));
 

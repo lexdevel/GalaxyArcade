@@ -8,11 +8,11 @@
 struct SpriteRendererShaderParams
 {
 public:
-    GLint   a_position = 0;
-    GLint   a_texcoord = 0;
-    GLint   u_pvmatrix = 0;
-    GLint   u_mvmatrix = 0;
-    GLint   u_teximage = 0;
+    GLuint  a_position = 0;
+    GLuint  a_texcoord = 0;
+    GLuint  u_pvmatrix = 0;
+    GLuint  u_mvmatrix = 0;
+    GLuint  u_teximage = 0;
 };
 
 class SpriteRenderer : public Renderer

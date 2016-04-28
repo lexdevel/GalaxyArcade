@@ -2,7 +2,9 @@
 #include "graphics/SpriteRenderer.h"
 #include "graphics/SpriteAnimation.h"
 #include <GLFW/glfw3.h>
-#include <ctime>
+
+#include <stdlib.h>
+#include <time.h>
 
 /**
  * Application entry point.
@@ -40,9 +42,9 @@ int main(int, const char **)
     glViewport(0, 0, 480, 800);
 
     // Load images
-    std::auto_ptr<Image> imagePlayer            = std::auto_ptr<Image>(Image::load("assets/player.png"));
-    std::auto_ptr<Image> imageBlow              = std::auto_ptr<Image>(Image::load("assets/blow.png"));
-    std::auto_ptr<Image> imageAsteroid          = std::auto_ptr<Image>(Image::load("assets/asteroid.png"));
+    std::shared_ptr<Image> imagePlayer          = std::shared_ptr<Image>(Image::load("assets/player.png"));
+    std::shared_ptr<Image> imageBlow            = std::shared_ptr<Image>(Image::load("assets/blow.png"));
+    std::shared_ptr<Image> imageAsteroid        = std::shared_ptr<Image>(Image::load("assets/asteroid.png"));
 
     // Generate textures
     std::shared_ptr<Texture2D> playerTexture    = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imagePlayer.get()));

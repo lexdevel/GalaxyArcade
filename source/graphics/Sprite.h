@@ -8,8 +8,8 @@
 class Sprite : public Renderable
 {
 protected:
-    Transformation              m_transformation;
-    std::auto_ptr<Texture2D>    m_texture;
+    Transformation   m_transformation;
+    Texture2D       *m_texture;
 public:
     explicit Sprite(const Transformation &transformation, Texture2D *texture);
     virtual ~Sprite();
@@ -17,7 +17,7 @@ public:
     Rect calculateBounds() const;
 
     inline Transformation &transformation() { return this->m_transformation; }
-    inline Texture2D *texture() { return this->m_texture.get(); }
+    inline Texture2D *texture() { return this->m_texture; }
 };
 
 #endif // SPRITE_H

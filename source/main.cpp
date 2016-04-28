@@ -2,12 +2,16 @@
 #include "graphics/SpriteRenderer.h"
 #include "graphics/SpriteAnimation.h"
 #include <GLFW/glfw3.h>
+#include <ctime>
 
 /**
  * Application entry point.
  */
 int main(int, const char **)
 {
+    // Randomize timer...
+    srand(static_cast<unsigned int>(time(nullptr)));
+
     if (glfwInit() != GL_TRUE)
     {
         std::cerr << "Error: cannot init glfw!" << std::endl;
@@ -35,25 +39,38 @@ int main(int, const char **)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glViewport(0, 0, 480, 800);
 
-    std::shared_ptr<Image> imagePlayer = std::shared_ptr<Image>(Image::load("assets/player.png"));
-    std::shared_ptr<Image> imageBlow = std::shared_ptr<Image>(Image::load("assets/blow.png"));
+    // Load images
+    std::auto_ptr<Image> imagePlayer            = std::auto_ptr<Image>(Image::load("assets/player.png"));
+    std::auto_ptr<Image> imageBlow              = std::auto_ptr<Image>(Image::load("assets/blow.png"));
+    std::auto_ptr<Image> imageAsteroid          = std::auto_ptr<Image>(Image::load("assets/asteroid.png"));
 
-    std::unique_ptr<Sprite> player = std::unique_ptr<Sprite>(
-            new Sprite(Transformation(Vector2f(0.0f, -128.0f), Vector2f(32.0f, 32.0f)),
-                       GraphicsFactory::createTexture2D(imagePlayer.get())
-            )
-    );
+    // Generate textures
+    std::shared_ptr<Texture2D> playerTexture    = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imagePlayer.get()));
+    std::shared_ptr<Texture2D> blowTexture      = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageBlow.get()));
+    std::shared_ptr<Texture2D> asteroidTexture  = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageAsteroid.get()));
 
-    std::shared_ptr<Texture2D> blowTexture = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageBlow.get()));
-    SpriteAnimation spriteAnimation = SpriteAnimation(1.0f / 60.0f);
+    // Create sprites
+    std::unique_ptr<Sprite> player;
+    std::unique_ptr<SpriteAnimation> asteroid;
+    std::unique_ptr<SpriteAnimation> blow;
 
-    for (unsigned int y = 0; y < 4; y++) {
-        for (unsigned int x = 0; x < 5; x++) {
-            spriteAnimation.push(new SpriteRegion(5, 4, x, y,
-                                                  Transformation(Vector2f(0.0f, 32.0f), Vector2f(64.0f, 64.0f)),
-                                                  blowTexture.get()));
+    player.reset(new Sprite(Transformation(Vector2f(0.0f, -256.0f), Vector2f(32.0f, 32.0f)), playerTexture.get()));
+    asteroid.reset(new SpriteAnimation(1.0f / 30.0f, PlaybackMode::LOOP));
+    blow.reset(new SpriteAnimation(1.0f / 48.0f, PlaybackMode::ONCE));
+
+    float aX = static_cast<float>(rand() % 240 - 240);
+    float aY = 480.0f;
+
+    for (uint32_t y = 0; y < 4; y++) {
+        for (uint32_t x = 0; x < 5; x++) {
+            if (x == 4 && y == 3) { continue; }
+            asteroid->push(new SpriteRegion(5, 4, x, y, Transformation(Vector2f(aX, aY), Vector2f(24.0f, 24.0f)), asteroidTexture.get()));
+            blow->push(new SpriteRegion(5, 4, x, y, Transformation(Vector2f(0.0f, 0.0f), Vector2f(64.0f, 64.0f)), blowTexture.get()));
         }
     }
+
+    asteroid->setAnimationState(AnimationState::PLAYING);
+    blow->setAnimationState(AnimationState::STOPPED);
 
     std::unique_ptr<SpriteRenderer> spriteRenderer = std::unique_ptr<SpriteRenderer>(new SpriteRenderer);
     spriteRenderer->create();
@@ -71,6 +88,8 @@ int main(int, const char **)
     float upsCounter = 0.0f;
     uint32_t ups = 0;
 
+    bool dead = false;
+
     while (!glfwWindowShouldClose(window))
     {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -87,7 +106,41 @@ int main(int, const char **)
             float delta = upsCounter;
             // ToDo: Update is still not smooth enough
 
-            spriteAnimation.update(delta);
+            asteroid->update(delta);
+            blow->update(delta);
+
+            if (!dead)
+            {
+                Transformation asteroidTransformation = asteroid->transformation();
+                asteroidTransformation.position.y -= 4.0f * delta * 100.0f;
+
+                Rect asteroidBounds = asteroid->getCurrentSpriteRegion()->calculateBounds();
+                Rect playerBounds = player->calculateBounds();
+
+                if (asteroidBounds.isOverlapped(playerBounds))
+                {
+                    Transformation blowTransformation = player->transformation();
+                    blowTransformation.scale = Vector2f(64.0f, 64.0f);
+
+                    blow->setTransformation(blowTransformation);
+                    blow->setAnimationState(AnimationState::PLAYING);
+                    asteroidTransformation.position.y = -480.0f;
+
+                    dead = true;
+                }
+
+                if (asteroidTransformation.position.y < -480.0f)
+                {
+                    asteroidTransformation.position.x = static_cast<float>(rand() % 240 - 240);
+                    asteroidTransformation.position.y = 480.0f;
+                }
+
+                asteroid->setTransformation(asteroidTransformation);
+            }
+
+            if (blow->animationState() == AnimationState::STOPPED) {
+                dead = false;
+            }
 
             if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
                 player->transformation().position.x -= playerSpeed * delta * 100.0f;
@@ -105,8 +158,14 @@ int main(int, const char **)
 
         spriteRenderer->initiate();
 
-        spriteRenderer->render(player.get());
-        spriteRenderer->render(spriteAnimation.getCurrentSpriteRegion());
+        if (!dead) {
+            spriteRenderer->render(player.get());
+            spriteRenderer->render(asteroid->getCurrentSpriteRegion());
+        } else {
+            if (blow->animationState() == AnimationState::PLAYING) {
+                spriteRenderer->render(blow->getCurrentSpriteRegion());
+            }
+        }
 
         spriteRenderer->submit();
 

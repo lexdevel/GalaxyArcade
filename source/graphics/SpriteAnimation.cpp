@@ -1,7 +1,7 @@
 #include "SpriteAnimation.h"
 
-SpriteAnimation::SpriteAnimation(float updateFreq)
-    : m_updateFreq(updateFreq)
+SpriteAnimation::SpriteAnimation(float updateFreq, const PlaybackMode &playbackMode)
+    : m_updateFreq(updateFreq), m_playbackMode(playbackMode)
 {
 }
 
@@ -15,18 +15,33 @@ void SpriteAnimation::push(SpriteRegion *spriteRegion)
     this->m_currentFrame = 0;
 }
 
+void SpriteAnimation::setAnimationState(const AnimationState &animationState)
+{
+    this->m_animationState = animationState;
+    if (this->m_animationState == AnimationState::STOPPED) {
+        this->m_currentFrame = 0;
+    }
+}
+
 void SpriteAnimation::update(float delta)
 {
     static float counter = 0.0f;
-    counter += delta;
 
-    if (counter >= this->m_updateFreq)
+    if (this->m_animationState == AnimationState::PLAYING)
     {
-        ++this->m_currentFrame;
-        if (this->m_currentFrame == this->m_frameQueue.size()) {
-            this->m_currentFrame = 0;
+        counter += delta;
+
+        if (counter >= this->m_updateFreq)
+        {
+            ++this->m_currentFrame;
+            if (this->m_currentFrame == this->m_frameQueue.size()) {
+                this->m_currentFrame = 0;
+                if (this->m_playbackMode == PlaybackMode::ONCE) {
+                    this->m_animationState = AnimationState::STOPPED;
+                }
+            }
+            counter = 0.0f;
         }
-        counter = 0.0f;
     }
 }
 

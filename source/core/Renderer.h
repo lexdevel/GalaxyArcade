@@ -21,6 +21,13 @@ public:
     virtual void create() = 0;
 
     /**
+     *
+     * @param w
+     * @param h
+     */
+    virtual void resize(uint32_t w, uint32_t h) = 0;
+
+    /**
      * Initiate the rendering process.
      */
     virtual void initiate() = 0;

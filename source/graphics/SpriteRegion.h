@@ -14,7 +14,7 @@ private:
     uint32_t m_y;
 public:
     SpriteRegion(uint32_t rows, uint32_t cols, uint32_t x, uint32_t y,
-                 const Transformation &transformation, Texture2D *texture);
+                 const Transformation &transformation, const std::shared_ptr<Texture2D> &texture);
     virtual ~SpriteRegion();
 
     inline uint32_t &rows() { return this->m_rows; }

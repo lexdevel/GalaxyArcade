@@ -5,6 +5,13 @@
 #include "../math/Vector2f.h"
 #include "SpriteRegion.h"
 
+struct Viewport
+{
+public:
+    uint32_t w = 0;
+    uint32_t h = 0;
+};
+
 struct SpriteRendererShaderParams
 {
 public:
@@ -22,11 +29,14 @@ private:
     std::unique_ptr<Buffer>     m_coordsBuffer;
     std::unique_ptr<Buffer>     m_elementArray;
     SpriteRendererShaderParams  m_shaderParams;
+    Viewport m_viewport;
 public:
     SpriteRenderer();
     virtual ~SpriteRenderer();
 
     virtual void create() override;
+
+    virtual void resize(uint32_t w, uint32_t h) override;
 
     virtual void initiate() override;
 

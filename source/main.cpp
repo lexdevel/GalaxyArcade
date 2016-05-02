@@ -3,8 +3,10 @@
 #include "graphics/SpriteAnimation.h"
 #include <GLFW/glfw3.h>
 
-#include <stdlib.h>
-#include <time.h>
+#include <cstdlib>
+#include <ctime>
+
+std::unique_ptr<SpriteRenderer> spriteRenderer;
 
 /**
  * Application entry point.
@@ -12,7 +14,7 @@
 int main(int, const char **)
 {
     // Randomize timer...
-    srand(static_cast<unsigned int>(time(nullptr)));
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
 
     if (glfwInit() != GL_TRUE)
     {
@@ -21,7 +23,7 @@ int main(int, const char **)
     }
 
     glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    // glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     GLFWwindow *window = glfwCreateWindow(480, 800, "Galaxy Arcade", nullptr, nullptr);
     glfwMakeContextCurrent(window);
@@ -52,11 +54,11 @@ int main(int, const char **)
     std::shared_ptr<Texture2D> asteroidTexture  = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageAsteroid.get()));
 
     // Create sprites
-    std::unique_ptr<Sprite> player;
-    std::unique_ptr<SpriteAnimation> asteroid;
-    std::unique_ptr<SpriteAnimation> blow;
+    std::unique_ptr<Sprite>             player;
+    std::unique_ptr<SpriteAnimation>    asteroid;
+    std::unique_ptr<SpriteAnimation>    blow;
 
-    player.reset(new Sprite(Transformation(Vector2f(0.0f, -256.0f), Vector2f(32.0f, 32.0f)), playerTexture.get()));
+    player.reset(new Sprite(Transformation(Vector2f(0.0f, -256.0f), Vector2f(32.0f, 32.0f)), playerTexture));
     asteroid.reset(new SpriteAnimation(1.0f / 30.0f, PlaybackMode::LOOP));
     blow.reset(new SpriteAnimation(1.0f / 48.0f, PlaybackMode::ONCE));
 
@@ -66,16 +68,23 @@ int main(int, const char **)
     for (uint32_t y = 0; y < 4; y++) {
         for (uint32_t x = 0; x < 5; x++) {
             if (x == 4 && y == 3) { continue; }
-            asteroid->push(new SpriteRegion(5, 4, x, y, Transformation(Vector2f(aX, aY), Vector2f(24.0f, 24.0f)), asteroidTexture.get()));
-            blow->push(new SpriteRegion(5, 4, x, y, Transformation(Vector2f(0.0f, 0.0f), Vector2f(64.0f, 64.0f)), blowTexture.get()));
+            asteroid->push(new SpriteRegion(5, 4, x, y, Transformation(Vector2f(aX, aY), Vector2f(24.0f, 24.0f)), asteroidTexture));
+            blow->push(new SpriteRegion(5, 4, x, y, Transformation(Vector2f(0.0f, 0.0f), Vector2f(64.0f, 64.0f)), blowTexture));
         }
     }
 
     asteroid->setAnimationState(AnimationState::PLAYING);
     blow->setAnimationState(AnimationState::STOPPED);
 
-    std::unique_ptr<SpriteRenderer> spriteRenderer = std::unique_ptr<SpriteRenderer>(new SpriteRenderer);
+    // std::unique_ptr<SpriteRenderer> spriteRenderer = std::unique_ptr<SpriteRenderer>(new SpriteRenderer);
+    spriteRenderer = std::unique_ptr<SpriteRenderer>(new SpriteRenderer());
     spriteRenderer->create();
+    spriteRenderer->resize(480, 800);
+
+    glfwSetWindowSizeCallback(window, [](GLFWwindow *, int w, int h) -> void {
+        std::cout << "Resize: " << w << "x" << h << std::endl;
+        spriteRenderer->resize(static_cast<uint32_t>(w), static_cast<uint32_t>(h));
+    });
 
 #ifdef DEBUG
     std::cout << "OpenGL: " << (const char *)glGetString(GL_VERSION) << std::endl;

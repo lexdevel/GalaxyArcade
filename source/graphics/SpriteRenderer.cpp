@@ -59,6 +59,9 @@ void SpriteRenderer::resize(uint32_t w, uint32_t h)
     this->m_viewport.w = w;
     this->m_viewport.h = h;
 
+    float aspect = static_cast<float>(this->m_viewport.w) / static_cast<float>(this->m_viewport.h);
+    this->m_projecton = Matrix::orthographic(-240.0f * aspect, 400.0f, 240.0f * aspect, -400.0f);
+
     glViewport(0, 0, w, h);
 }
 
@@ -73,20 +76,7 @@ void SpriteRenderer::initiate()
     GLCALL(glVertexAttribPointer(this->m_shaderParams.a_position, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
     this->m_vertexBuffer->detach();
 
-    if (this->m_viewport.w > this->m_viewport.h)
-    {
-        float aspect = static_cast<float>(this->m_viewport.w) / static_cast<float>(this->m_viewport.h);
-        Matrix projection = Matrix::orthographic(-240.0f * aspect, 400.0f, 240.0f * aspect, -400.0f);
-        projection = projection.multiply(Matrix::scale(1.0f * aspect, 1.0f * aspect));
-        GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_pvmatrix, 1, GL_FALSE, projection.data()));
-    }
-    else
-    {
-        float aspect = static_cast<float>(this->m_viewport.w) / static_cast<float>(this->m_viewport.h);
-        Matrix projection = Matrix::orthographic(-240.0f, 400.0f / aspect, 240.0f, -400.0f / aspect);
-        projection = projection.multiply(Matrix::scale(1.0f * aspect, 1.0f * aspect));
-        GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_pvmatrix, 1, GL_FALSE, projection.data()));
-    }
+    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_pvmatrix, 1, GL_FALSE, this->m_projecton.data()));
 }
 
 void SpriteRenderer::render(Renderable *renderable)

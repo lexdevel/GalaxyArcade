@@ -29,7 +29,8 @@ private:
     std::unique_ptr<Buffer>     m_coordsBuffer;
     std::unique_ptr<Buffer>     m_elementArray;
     SpriteRendererShaderParams  m_shaderParams;
-    Viewport m_viewport;
+    Viewport                    m_viewport;
+    Matrix                      m_projecton;
 public:
     SpriteRenderer();
     virtual ~SpriteRenderer();

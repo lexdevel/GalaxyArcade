@@ -82,7 +82,7 @@ int main(int, const char **)
     spriteRenderer->resize(480, 800);
 
     glfwSetWindowSizeCallback(window, [](GLFWwindow *, int w, int h) -> void {
-        std::cout << "Resize: " << w << "x" << h << std::endl;
+        // std::cout << "Resize: " << w << "x" << h << std::endl;
         spriteRenderer->resize(static_cast<uint32_t>(w), static_cast<uint32_t>(h));
     });
 

@@ -21,6 +21,7 @@ class SpriteAnimation
 private:
     std::vector<SpriteRegion *>     m_frameQueue;
     float                           m_updateFreq;
+    float                           m_updateCounter;
     unsigned int                    m_currentFrame;
     PlaybackMode                    m_playbackMode;
     AnimationState                  m_animationState;

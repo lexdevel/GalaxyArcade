@@ -11,10 +11,10 @@ Sprite::~Sprite()
 
 Rect Sprite::calculateBounds() const
 {
-    return {
+    return Rect(
         this->transformation().position.x - this->transformation().scale.x * 2.0f,
         this->transformation().position.y - this->transformation().scale.y * 2.0f,
         this->transformation().scale.x * 2.0f,
-        this->transformation().scale.y * 2.0f,
-    };
+        this->transformation().scale.y * 2.0f
+    );
 }

@@ -9,6 +9,8 @@ public:
     float w;
     float h;
 public:
+    Rect();
+    Rect(float x, float y, float w, float h);
 
     bool isOverlapped(const Rect &rect) const;
 };

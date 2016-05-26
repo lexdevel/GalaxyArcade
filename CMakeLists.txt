@@ -43,7 +43,6 @@ if (WIN32 AND MINGW)
 endif()
 
 set(SOURCE ${SOURCE} source/util/GameTime.cpp)
-set(SOURCE ${SOURCE} source/util/FileReader.cpp)
 set(SOURCE ${SOURCE} source/util/Image.cpp)
 
 set(SOURCE ${SOURCE} source/core/Attachable.cpp)

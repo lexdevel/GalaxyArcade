@@ -58,7 +58,7 @@ int main(int, const char **)
 
     // Create sprites
     std::unique_ptr<Sprite>             player;
-    std::unique_ptr<SpriteAnimation>    asteroid;
+    std::shared_ptr<SpriteAnimation>    asteroid;
     std::unique_ptr<SpriteAnimation>    blow;
 
     std::list<std::shared_ptr<Sprite>> beamList;
@@ -191,8 +191,8 @@ int main(int, const char **)
             if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
                 if (beamSpawnCounter >= beamSpawnFreq) {
                     std::shared_ptr<Sprite> beam = std::shared_ptr<Sprite>(new Sprite(player->transformation(), beamTexture));
-                    beam->transformation().scale.x = 8.0f;
-                    beam->transformation().scale.y = 24.0f;
+                    beam->transformation().scale.x = 4.0f;
+                    beam->transformation().scale.y = 12.0f;
 
                     beamList.push_back(beam);
                     beamSpawnCounter = 0.0f;

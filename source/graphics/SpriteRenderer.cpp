@@ -63,12 +63,14 @@ void SpriteRenderer::resize(uint32_t w, uint32_t h)
 
     if (this->m_viewport.w > this->m_viewport.h)
     {
-        this->m_projecton = Matrix::orthographic(-240.0f * aspect, 400.0f / aspect, 240.0f * aspect, -400.0f / aspect);
+        // this->m_projecton = Matrix::orthographic(-240.0f * aspect, 400.0f / aspect, 240.0f * aspect, -400.0f / aspect);
+        this->m_projecton = Matrix::orthographic(-1.0f * aspect, 1.0f, 1.0f * aspect, -1.0f);
         // this->m_projecton = this->m_projecton.multiply(Matrix::scale(1.0f, 1.0f * aspect));
     }
     else
     {
-        this->m_projecton = Matrix::orthographic(-240.0f, 400.0f / aspect, 240.0f, -400.0f / aspect);
+        // this->m_projecton = Matrix::orthographic(-240.0f, 400.0f / aspect, 240.0f, -400.0f / aspect);
+        this->m_projecton = Matrix::orthographic(-1.0f, 1.0f / aspect, 1.0f, -1.0f / aspect);
         // this->m_projecton = this->m_projecton.multiply(Matrix::scale(1.0f * aspect, 1.0f));
     }
 

@@ -46,27 +46,27 @@ int main(int, const char **)
 
     // Load images
     std::shared_ptr<Image> imagePlayer          = std::shared_ptr<Image>(Image::load("assets/player.png"));
-    std::shared_ptr<Image> imageBlow            = std::shared_ptr<Image>(Image::load("assets/blow.png"));
-    std::shared_ptr<Image> imageAsteroid        = std::shared_ptr<Image>(Image::load("assets/asteroid.png"));
-    std::shared_ptr<Image> imageBeam            = std::shared_ptr<Image>(Image::load("assets/beam.png"));
+    // std::shared_ptr<Image> imageBlow            = std::shared_ptr<Image>(Image::load("assets/blow.png"));
+    // std::shared_ptr<Image> imageAsteroid        = std::shared_ptr<Image>(Image::load("assets/asteroid.png"));
+    // std::shared_ptr<Image> imageBeam            = std::shared_ptr<Image>(Image::load("assets/beam.png"));
 
     // Generate textures
     std::shared_ptr<Texture2D> playerTexture    = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imagePlayer.get()));
-    std::shared_ptr<Texture2D> blowTexture      = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageBlow.get()));
-    std::shared_ptr<Texture2D> asteroidTexture  = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageAsteroid.get()));
-    std::shared_ptr<Texture2D> beamTexture      = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageBeam.get()));
+    // std::shared_ptr<Texture2D> blowTexture      = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageBlow.get()));
+    // std::shared_ptr<Texture2D> asteroidTexture  = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageAsteroid.get()));
+    // std::shared_ptr<Texture2D> beamTexture      = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imageBeam.get()));
 
     // Create sprites
     std::unique_ptr<Sprite>             player;
-    std::shared_ptr<SpriteAnimation>    asteroid;
-    std::unique_ptr<SpriteAnimation>    blow;
+    // std::shared_ptr<SpriteAnimation>    asteroid;
+    // std::unique_ptr<SpriteAnimation>    blow;
+    // std::list<std::shared_ptr<Sprite>> beamList;
 
-    std::list<std::shared_ptr<Sprite>> beamList;
+    player.reset(new Sprite(Transformation(Vector2f(0.0f, 0.0f), Vector2f(0.24f, 0.24f)), playerTexture));
+    // asteroid.reset(new SpriteAnimation(1.0f / 30.0f, PlaybackMode::LOOP));
+    // blow.reset(new SpriteAnimation(1.0f / 48.0f, PlaybackMode::ONCE));
 
-    player.reset(new Sprite(Transformation(Vector2f(0.0f, -256.0f), Vector2f(32.0f, 32.0f)), playerTexture));
-    asteroid.reset(new SpriteAnimation(1.0f / 30.0f, PlaybackMode::LOOP));
-    blow.reset(new SpriteAnimation(1.0f / 48.0f, PlaybackMode::ONCE));
-
+    /*
     float aX = static_cast<float>(rand() % 240 - 240);
     float aY = 480.0f;
 
@@ -80,6 +80,7 @@ int main(int, const char **)
 
     asteroid->setAnimationState(AnimationState::PLAYING);
     blow->setAnimationState(AnimationState::STOPPED);
+    */
 
     // std::unique_ptr<SpriteRenderer> spriteRenderer = std::unique_ptr<SpriteRenderer>(new SpriteRenderer);
     spriteRenderer = std::unique_ptr<SpriteRenderer>(new SpriteRenderer());
@@ -95,7 +96,7 @@ int main(int, const char **)
     std::cout << "OpenGL: " << (const char *)glGetString(GL_VERSION) << std::endl;
 #endif
 
-    const float playerSpeed = 8.0f;
+    const float playerSpeed = 0.2f;
 
     float fpsCounter = 0.0f;
     uint32_t fps = 0;
@@ -104,10 +105,9 @@ int main(int, const char **)
     float upsCounter = 0.0f;
     uint32_t ups = 0;
 
-    const float beamSpawnFreq = 1.0f / 6.0f;
-    float beamSpawnCounter = 0.0f;
-
-    bool dead = false;
+    // const float beamSpawnFreq = 1.0f / 6.0f;
+    // float beamSpawnCounter = 0.0f;
+    // bool dead = false;
 
     while (!glfwWindowShouldClose(window))
     {
@@ -124,10 +124,11 @@ int main(int, const char **)
 
             float delta = upsCounter;
 
-            beamSpawnCounter += delta;
-            asteroid->update(delta);
-            blow->update(delta);
+            // beamSpawnCounter += delta;
+            // asteroid->update(delta);
+            // blow->update(delta);
 
+            /*
             for (std::list<std::shared_ptr<Sprite>>::iterator it = beamList.begin(); it != beamList.end(); ++it)
             {
                 (*it)->transformation().position.y += 16.0f * delta * 100.0f;
@@ -181,6 +182,7 @@ int main(int, const char **)
             if (blow->animationState() == AnimationState::STOPPED) {
                 dead = false;
             }
+            */
 
             if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS) {
                 player->transformation().position.x -= playerSpeed * delta * 100.0f;
@@ -188,6 +190,8 @@ int main(int, const char **)
             if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS) {
                 player->transformation().position.x += playerSpeed * delta * 100.0f;
             }
+
+            /*
             if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS) {
                 if (beamSpawnCounter >= beamSpawnFreq) {
                     std::shared_ptr<Sprite> beam = std::shared_ptr<Sprite>(new Sprite(player->transformation(), beamTexture));
@@ -198,6 +202,7 @@ int main(int, const char **)
                     beamSpawnCounter = 0.0f;
                 }
             }
+            */
 
             ups++;
             upsCounter = 0.0f;
@@ -207,22 +212,7 @@ int main(int, const char **)
         glClear(GL_COLOR_BUFFER_BIT);
 
         spriteRenderer->initiate();
-
-        if (!dead) {
-            spriteRenderer->render(player.get());
-            spriteRenderer->render(asteroid->getCurrentSpriteRegion());
-        }
-
-        if (blow->animationState() == AnimationState::PLAYING) {
-            spriteRenderer->render(blow->getCurrentSpriteRegion());
-        }
-
-
-        for (auto &it : beamList)
-        {
-            spriteRenderer->render(it.get());
-        }
-
+        spriteRenderer->render(player.get());
         spriteRenderer->submit();
 
         fpsCounter += GameTime::elapsed();

@@ -6,10 +6,10 @@
 struct Color
 {
 public:
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    unsigned char a;
+    unsigned char r = 0x00;
+    unsigned char g = 0x00;
+    unsigned char b = 0x00;
+    unsigned char a = 0xFF;
 };
 
 class Image

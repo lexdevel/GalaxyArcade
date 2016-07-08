@@ -4,6 +4,7 @@ Buffer::Buffer(const BufferTarget &target)
     : m_target(target)
 {
     GLCALL(glGenBuffers(1, &this->m_identifier));
+    // assert(this->m_identifier != 0);
 }
 
 Buffer::~Buffer()
@@ -11,7 +12,7 @@ Buffer::~Buffer()
     if (this->m_identifier != 0)
     {
         GLCALL(glDeleteBuffers(1, &this->m_identifier));
-        this->m_identifier = 0;
+        // this->m_identifier = 0;
     }
 }
 

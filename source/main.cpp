@@ -1,4 +1,4 @@
-#include "graphics/SpriteRenderer.h"
+#include "platform/ShaderProgram.h"
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>
@@ -39,14 +39,6 @@ int main(int, const char **)
     GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCALL(glViewport(0, 0, 480, 800));
 
-    std::shared_ptr<Image>      imagePlayer     = std::shared_ptr<Image>(Image::load("assets/player.png"));
-    std::shared_ptr<Texture2D>  playerTexture   = std::shared_ptr<Texture2D>(GraphicsFactory::createTexture2D(imagePlayer.get()));
-    std::unique_ptr<Sprite>     player          = std::unique_ptr<Sprite>(new Sprite(Transformation(Vector2f(0.0f, 0.0f), Vector2f(0.12, 0.12f)), playerTexture));
-
-    std::unique_ptr<SpriteRenderer> spriteRenderer = std::unique_ptr<SpriteRenderer>(new SpriteRenderer());
-    spriteRenderer->create();
-    spriteRenderer->resize(480, 800);
-
 #ifdef DEBUG
     std::cout << "OpenGL: " << (const char *)glGetString(GL_VERSION) << std::endl;
 #endif
@@ -57,12 +49,10 @@ int main(int, const char **)
             glfwSetWindowShouldClose(window, GL_TRUE);
         }
 
-        GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
+        GLCALL(glClearColor(0.4f, 0.6f, 0.8f, 1.0f));
         GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 
-        spriteRenderer->initiate();
-        spriteRenderer->render(player.get());
-        spriteRenderer->submit();
+        // Render section...
 
         glfwSwapBuffers(window);
         glfwPollEvents();

@@ -10,14 +10,18 @@
 #endif
 
 #include <iostream>
+#include <stdint.h>
+// #include <assert.h>
+#include <string>
 #include <memory>
 
 #ifdef DEBUG
-    #define GLCALL(STMT)    do {                                            \
-                                STMT; GLenum code = glGetError();           \
-                                if (code != GL_NO_ERROR) {                  \
-                                    /* TODO: LOG */                         \
-                                }                                           \
+    #define GLCALL(STMT)    do {                                                                \
+                                STMT; GLenum code = glGetError();                               \
+                                if (code != GL_NO_ERROR) {                                      \
+                                    std::cerr << "OpenGL CALL FAILED WITH CODE " << code        \
+                                              << " ( " << #STMT << " )"          << std::endl;  \
+                                }                                                               \
                             } while (0)
 #else
     #define GLCALL(STMT)    STMT

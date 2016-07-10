@@ -4,8 +4,8 @@
 #include "core/PlatformEntity.h"
 
 enum BufferTarget : GLenum {
-    VertexBuffer = GL_ARRAY_BUFFER,
-    ElementArray = GL_ELEMENT_ARRAY_BUFFER
+    VERTEXBUFFER = GL_ARRAY_BUFFER,
+    ELEMENTARRAY = GL_ELEMENT_ARRAY_BUFFER
 };
 
 /**

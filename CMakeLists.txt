@@ -45,6 +45,12 @@ endif()
 set(SOURCE ${SOURCE} source/util/GameTime.cpp)
 set(SOURCE ${SOURCE} source/util/Image.cpp)
 
+set(SOURCE ${SOURCE} source/math/Vector2f.cpp)
+set(SOURCE ${SOURCE} source/math/Matrix.cpp)
+set(SOURCE ${SOURCE} source/math/Transformation.cpp)
+set(SOURCE ${SOURCE} source/math/Rect.cpp)
+
+set(SOURCE ${SOURCE} source/platform/core/Attachable.cpp)
 set(SOURCE ${SOURCE} source/platform/core/PlatformEntity.cpp)
 set(SOURCE ${SOURCE} source/platform/Buffer.cpp)
 set(SOURCE ${SOURCE} source/platform/VertexBuffer.cpp)
@@ -52,10 +58,8 @@ set(SOURCE ${SOURCE} source/platform/ElementArray.cpp)
 set(SOURCE ${SOURCE} source/platform/Texture2D.cpp)
 set(SOURCE ${SOURCE} source/platform/ShaderProgram.cpp)
 
-set(SOURCE ${SOURCE} source/math/Vector2f.cpp)
-set(SOURCE ${SOURCE} source/math/Matrix.cpp)
-set(SOURCE ${SOURCE} source/math/Transformation.cpp)
-set(SOURCE ${SOURCE} source/math/Rect.cpp)
+set(SOURCE ${SOURCE} source/core/Renderable.cpp)
+set(SOURCE ${SOURCE} source/core/Renderer.cpp)
 
 set(SOURCE ${SOURCE} source/main.cpp)
 

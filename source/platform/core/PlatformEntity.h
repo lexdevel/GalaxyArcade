@@ -9,9 +9,9 @@
 #include <GLXW/glxw.h>
 #endif
 
+#include "Attachable.h"
 #include <iostream>
 #include <stdint.h>
-// #include <assert.h>
 #include <string>
 #include <memory>
 
@@ -30,7 +30,7 @@
 /**
  * @brief The abstract platform entity class.
  */
-class PlatformEntity
+class PlatformEntity : public Attachable
 {
 protected:
     GLuint m_identifier;
@@ -38,7 +38,14 @@ public:
     explicit PlatformEntity(const GLuint &identifier = 0);
     virtual ~PlatformEntity() = 0;
 
+    /**
+     * @brief Attach the platform entity.
+     */
     virtual void attach() = 0;
+
+    /**
+     * @brief Detach the platform entity.
+     */
     virtual void detach() = 0;
 
     inline const GLuint &identifier() const { return this->m_identifier; }

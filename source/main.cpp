@@ -1,4 +1,4 @@
-#include "platform/ShaderProgram.h"
+#include "core/Renderer.h"
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>

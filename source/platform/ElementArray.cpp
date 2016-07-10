@@ -1,7 +1,7 @@
 #include "ElementArray.h"
 
 ElementArray::ElementArray()
-    : Buffer(BufferTarget::ElementArray)
+    : Buffer(BufferTarget::ELEMENTARRAY)
 {
 }
 

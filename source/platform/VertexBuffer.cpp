@@ -1,7 +1,7 @@
 #include "VertexBuffer.h"
 
 VertexBuffer::VertexBuffer()
-    : Buffer(BufferTarget::VertexBuffer)
+    : Buffer(BufferTarget::VERTEXBUFFER)
 {
 }
 

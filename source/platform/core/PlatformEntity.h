@@ -10,8 +10,9 @@
 #endif
 
 #include "Attachable.h"
-#include <iostream>
 #include <stdint.h>
+#include <iostream>
+#include <vector>
 #include <string>
 #include <memory>
 

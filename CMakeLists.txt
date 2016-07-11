@@ -4,6 +4,8 @@ project(GalaxyArcade)
 set(SOURCE)
 set(LIBS)
 
+add_definitions(-std=c++11)
+
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
     add_definitions(-DDEBUG)
     add_definitions(-O0)
@@ -12,7 +14,7 @@ else()
     add_definitions(-D__NO_INLINE__) # Fix "_hypot" issue with math.h/cmath and -O3 optimization level
 endif()
 
-add_definitions(-std=c++11)
+add_definitions(-DSTB_IMAGE_IMPLEMENTATION) # Define for STB Image
 
 include_directories(vendor/stb/include)
 include_directories(vendor/glfw/include)
@@ -42,9 +44,6 @@ if (WIN32 AND MINGW)
     set(LIBS ${LIBS} gdi32)
 endif()
 
-set(SOURCE ${SOURCE} source/util/GameTime.cpp)
-set(SOURCE ${SOURCE} source/util/Image.cpp)
-
 set(SOURCE ${SOURCE} source/math/Vector2f.cpp)
 set(SOURCE ${SOURCE} source/math/Matrix.cpp)
 set(SOURCE ${SOURCE} source/math/Transformation.cpp)
@@ -60,6 +59,9 @@ set(SOURCE ${SOURCE} source/platform/ShaderProgram.cpp)
 
 set(SOURCE ${SOURCE} source/core/Renderable.cpp)
 set(SOURCE ${SOURCE} source/core/Renderer.cpp)
+set(SOURCE ${SOURCE} source/core/Bitmap.cpp)
+
+set(SOURCE ${SOURCE} source/util/BitmapLoader.cpp)
 
 set(SOURCE ${SOURCE} source/main.cpp)
 

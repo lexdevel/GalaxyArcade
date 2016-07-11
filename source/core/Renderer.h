@@ -24,7 +24,7 @@ public:
 
     /**
      * @brief Render the specified renderable.
-     * @param The specified renderable
+     * @param renderable The specified renderable
      */
     virtual void render(Renderable *renderable) = 0;
 

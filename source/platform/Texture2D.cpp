@@ -22,5 +22,12 @@ Texture2D::~Texture2D()
     }
 }
 
+void Texture2D::texImage2D(const Bitmap &bitmap)
+{
+    GLCALL(glBindTexture(GL_TEXTURE_2D, this->m_identifier));
+    GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, bitmap.w(), bitmap.h(), 0, GL_RGBA, GL_UNSIGNED_BYTE, bitmap.data().data()));
+    GLCALL(glBindTexture(GL_TEXTURE_2D, 0));
+}
+
 void Texture2D::attach() { GLCALL(glBindTexture(GL_TEXTURE_2D, this->m_identifier)); }
 void Texture2D::detach() { GLCALL(glBindTexture(GL_TEXTURE_2D, 0)); }

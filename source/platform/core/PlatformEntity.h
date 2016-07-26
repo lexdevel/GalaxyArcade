@@ -9,7 +9,6 @@
 #include <GLXW/glxw.h>
 #endif
 
-#include "Attachable.h"
 #include <stdint.h>
 #include <iostream>
 #include <vector>
@@ -31,7 +30,7 @@
 /**
  * @brief The abstract platform entity class.
  */
-class PlatformEntity : public Attachable
+class PlatformEntity
 {
 protected:
     GLuint m_identifier;

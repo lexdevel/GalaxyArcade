@@ -34,9 +34,12 @@ int main(int, const char **)
     }
 #endif
 
-    GLCALL(glDisable(GL_DEPTH_TEST));
-    GLCALL(glEnable(GL_BLEND));
+    // Setup OpenGL
+    GLCALL(glDisable(GL_DEPTH_TEST));                           // Disable depth test (no need for 2D)
+    GLCALL(glEnable(GL_BLEND));                                 // Enable blending (transparency/alpha channel)
+    GLCALL(glEnable(GL_CULL_FACE));                             // Enable face culling (to draw objects from one side)
     GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
+    GLCALL(glCullFace(GL_FRONT));
     GLCALL(glViewport(0, 0, 480, 800));
 
 #ifdef DEBUG

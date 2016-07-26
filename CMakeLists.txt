@@ -49,7 +49,6 @@ set(SOURCE ${SOURCE} source/math/Matrix.cpp)
 set(SOURCE ${SOURCE} source/math/Transformation.cpp)
 set(SOURCE ${SOURCE} source/math/Rect.cpp)
 
-set(SOURCE ${SOURCE} source/platform/core/Attachable.cpp)
 set(SOURCE ${SOURCE} source/platform/core/PlatformEntity.cpp)
 set(SOURCE ${SOURCE} source/platform/Buffer.cpp)
 set(SOURCE ${SOURCE} source/platform/VertexBuffer.cpp)

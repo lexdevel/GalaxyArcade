@@ -10,12 +10,9 @@ Transformation::Transformation(const Vector2f &position, const Vector2f &scale)
 {
 }
 
-Matrix Transformation::createTransformationMatrix() const
+Matrix Transformation::calculateTransformationMatrix() const
 {
-    Matrix matrix = Matrix::identity();
-
-    matrix = matrix.multiply(Matrix::translate(this->position.x, this->position.y));
-    matrix = matrix.multiply(Matrix::scale(this->scale.x, this->scale.y));
-
-    return matrix;
+    return Matrix::identity()
+            .multiply(Matrix::translate(this->position.x, this->position.y))
+            .multiply(Matrix::scale(this->scale.x, this->scale.y));
 }

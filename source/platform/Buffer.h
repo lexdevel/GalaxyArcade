@@ -8,8 +8,9 @@ enum BufferTarget : GLenum {
     ELEMENTARRAY = GL_ELEMENT_ARRAY_BUFFER
 };
 
-enum BufferUsage : GLenum {
+enum BufferDraw : GLenum {
     STATIC       = GL_STATIC_DRAW,
+    STREAM       = GL_STREAM_DRAW,
     DYNAMIC      = GL_DYNAMIC_DRAW
 };
 
@@ -27,10 +28,10 @@ public:
     virtual void attach() override;
     virtual void detach() override;
 
-    template<typename T> void bufferData(const std::vector<T> &buffer, const BufferUsage &usage = BufferUsage::STATIC)
+    template<typename T> void bufferData(const std::vector<T> &buffer, const BufferDraw &draw = BufferDraw::STATIC)
     {
         GLCALL(glBindBuffer(this->m_target, this->m_identifier));
-        GLCALL(glBufferData(this->m_target, sizeof(T) * static_cast<GLsizeiptr>(buffer.size()), buffer.data(), usage));
+        GLCALL(glBufferData(this->m_target, sizeof(T) * static_cast<GLsizeiptr>(buffer.size()), buffer.data(), draw));
         GLCALL(glBindBuffer(this->m_target, 0));
     }
 };

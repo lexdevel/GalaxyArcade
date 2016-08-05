@@ -13,8 +13,20 @@ class Renderer
 protected:
     std::shared_ptr<ShaderProgram> m_shaderProgram;
 public:
+
+    /**
+     * Constructor.
+     * @param shaderProgram The shader program
+     */
     explicit Renderer(const std::shared_ptr<ShaderProgram> &shaderProgram);
     virtual ~Renderer() = 0;
+
+    /**
+     * @brief Resize the renderer.
+     * @param w
+     * @param h
+     */
+    virtual void resize(uint32_t w, uint32_t h) = 0;
 
     /**
      * @brief Initiate the rendering process.

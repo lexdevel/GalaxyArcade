@@ -4,6 +4,7 @@ ShaderProgram::ShaderProgram(const std::string &vertSource, const std::string &f
 {
     GLuint vertShader = 0;
     GLuint fragShader = 0;
+    GLint  status     = 0;
 
     GLCALL(this->m_identifier = glCreateProgram());
     GLCALL(vertShader = glCreateShader(  GL_VERTEX_SHADER));
@@ -15,14 +16,19 @@ ShaderProgram::ShaderProgram(const std::string &vertSource, const std::string &f
     GLCALL(glCompileShader(vertShader));
     GLCALL(glCompileShader(fragShader));
 
-    // ToDo: Check for shader compilation status
+    GLCALL(glGetShaderiv(vertShader, GL_COMPILE_STATUS, &status));
+    if (status == GL_FALSE) { throw std::runtime_error("Cannot compile vert shader!"); }
+
+    GLCALL(glGetShaderiv(fragShader, GL_COMPILE_STATUS, &status));
+    if (status == GL_FALSE) { throw std::runtime_error("Cannot compile frag shader!"); }
 
     GLCALL(glAttachShader(this->m_identifier, vertShader));
     GLCALL(glAttachShader(this->m_identifier, fragShader));
 
     GLCALL(glLinkProgram(this->m_identifier));
 
-    // ToDo: Check for program link status
+    GLCALL(glGetProgramiv(this->m_identifier, GL_LINK_STATUS, &status));
+    if (status == GL_FALSE) { throw std::runtime_error("Cannor link shader program!"); }
 
     GLCALL(glDeleteShader(fragShader)); // Free the frag shader
     GLCALL(glDeleteShader(vertShader)); // Free the vert shader

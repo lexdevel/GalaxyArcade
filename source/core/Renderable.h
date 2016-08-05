@@ -4,12 +4,21 @@
 #include "../platform/VertexBuffer.h"
 #include "../platform/ElementArray.h"
 
+/**
+ * @brief The renderable interface.
+ */
 class Renderable
 {
 protected:
     std::shared_ptr<VertexBuffer> m_vertexBuffer;
     std::shared_ptr<ElementArray> m_elementArray;
 public:
+
+    /**
+     * Constructor.
+     * @param vertexBuffer The vertex buffer
+     * @param elementArray The element array
+     */
     explicit Renderable(const std::shared_ptr<VertexBuffer> &vertexBuffer,
                         const std::shared_ptr<ElementArray> &elementArray);
     virtual ~Renderable() = 0;

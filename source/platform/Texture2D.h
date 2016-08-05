@@ -5,15 +5,15 @@
 #include "../core/Bitmap.h"
 
 enum TextureFilter : GLint {
-    Linear          = GL_LINEAR,
-    Nearest         = GL_NEAREST
+    LINEAR          = GL_LINEAR,
+    NEAREST         = GL_NEAREST
 };
 
 enum TextureWrap : GLint {
-    Repeat                  = GL_REPEAT,
-    MirroredRepeat          = GL_MIRRORED_REPEAT,
-    ClampToEdge             = GL_CLAMP_TO_EDGE,
-    ClampToBorder           = GL_CLAMP_TO_BORDER
+    REPEAT                  = GL_REPEAT,
+    MIRROREDREPEAT          = GL_MIRRORED_REPEAT,
+    CLAMPTOEDGE             = GL_CLAMP_TO_EDGE,
+    CLAMPTOBORDER           = GL_CLAMP_TO_BORDER
 };
 
 /**
@@ -22,11 +22,14 @@ enum TextureWrap : GLint {
 class Texture2D : public PlatformEntity
 {
 public:
-    explicit Texture2D(const TextureFilter &filter = TextureFilter::Nearest,
-                       const TextureWrap &wrap = TextureWrap::ClampToEdge);
+    explicit Texture2D(const TextureFilter &filter = TextureFilter::NEAREST,
+                       const TextureWrap &wrap = TextureWrap::CLAMPTOEDGE);
+    explicit Texture2D(const std::shared_ptr<Bitmap> &bitmap,
+                       const TextureFilter &filter = TextureFilter::NEAREST,
+                       const TextureWrap &wrap = TextureWrap::CLAMPTOEDGE);
     virtual ~Texture2D();
 
-    void texImage2D(const Bitmap &bitmap);
+    void texImage2D(const std::shared_ptr<Bitmap> &bitmap);
 
     virtual void attach() override;
     virtual void detach() override;

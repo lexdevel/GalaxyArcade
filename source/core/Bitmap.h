@@ -4,6 +4,9 @@
 #include <stdint.h>
 #include <vector>
 
+/**
+ * @brief The RGBA structure.
+ */
 struct RGBA {
     uint8_t r;
     uint8_t g;

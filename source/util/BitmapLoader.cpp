@@ -12,10 +12,11 @@ std::shared_ptr<Bitmap> BitmapLoader::load(const std::string &path)
     uint8_t *buffer = stbi_load(path.data(), &w, &h, &format, 0);
     if (buffer != nullptr)
     {
-        std::vector<RGBA> data = std::vector<RGBA>(static_cast<uint32_t>(w * h));
+        std::vector<RGBA> data          = std::vector<RGBA>(static_cast<uint32_t>(w * h));
+        uint32_t          bufferSize    = static_cast<uint32_t>(w * h * format);
+        uint32_t          e             = 0;
 
-        uint32_t e = 0;
-        for (uint32_t i = 0; i < static_cast<uint32_t>(w * h * format); i += format)
+        for (uint32_t i = 0; i < bufferSize; i += format)
         {
             RGBA rgba = { 0x00, 0x00, 0x00, 0xFF };
             ::memcpy(&rgba, &buffer[i], static_cast<uint32_t>(format));

@@ -13,7 +13,10 @@ public:
     Transformation();
     Transformation(const Vector2f &position, const Vector2f &scale);
 
-    Matrix createTransformationMatrix() const;
+    /**
+     * @brief Calculate the transformation matrix.
+     */
+    Matrix calculateTransformationMatrix() const;
 };
 
 #endif // TRANSFORMATION_H

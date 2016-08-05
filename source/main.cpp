@@ -1,19 +1,23 @@
-#include "core/Renderer.h"
+#include "graphics/SpriteRenderer.h"
+#include "util/BitmapLoader.h"
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>
 #include <time.h>
 
 /**
- * Application entry point.
+ * @brief Application entry point.
+ * @param argc Command-line arguments length
+ * @param argv Command-line arguments
  */
-int main(int, const char **)
+int main(int argc, const char **argv)
 {
-    // Randomize timer...
-    ::srand(static_cast<uint32_t>(::time(nullptr)));
+    (void) argc;    // Avoid unused parameter warning - argc
+    (void) argv;    // Avoid unused parameter warning - argv
 
-    if (glfwInit() != GL_TRUE)
-    {
+    ::srand(static_cast<unsigned>(::time(nullptr))); // Randomize timer...
+
+    if (glfwInit() != GL_TRUE) {
         std::cerr << "Error: cannot init glfw!" << std::endl;
         return -1;
     }
@@ -21,16 +25,22 @@ int main(int, const char **)
     glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    GLFWwindow *window = glfwCreateWindow(480, 800, "Galaxy Arcade", nullptr, nullptr);
+    auto window = glfwCreateWindow(800, 480, "Galaxy Arcade", nullptr, nullptr);
+    if (!window) {
+        std::cerr << "Error: cannot create window!" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
+
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(1);
+    // glfwSwapInterval(1);
 
 #ifdef OS_WIN32
-    if (glxwInit() != 0)
-    {
+    if (glxwInit() != 0) {
         std::cerr << "Error: cannot init glxw!" << std::endl;
         glfwDestroyWindow(window);
         glfwTerminate();
+        return -1;
     }
 #endif
 
@@ -40,10 +50,32 @@ int main(int, const char **)
     GLCALL(glEnable(GL_CULL_FACE));                             // Enable face culling (to draw objects from one side)
     GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCALL(glCullFace(GL_FRONT));
-    GLCALL(glViewport(0, 0, 480, 800));
+    GLCALL(glViewport(0, 0, 800, 480));
+
+    std::shared_ptr<SpriteRenderer> spriteRenderer;
+
+    try
+    {
+        spriteRenderer = std::shared_ptr<SpriteRenderer>(new SpriteRenderer());
+    }
+    catch (const std::runtime_error &ex)
+    {
+        std::cerr << "Runtime error: " << ex.what() << std::endl;
+        std::cin.get();
+        glfwDestroyWindow(window);
+        glfwTerminate();
+        return -2;
+    }
+
+    // Load resources...
+    std::shared_ptr<Bitmap>     playerBitmap            = BitmapLoader::load("assets/player.png");
+    std::shared_ptr<Texture2D>  playerTextureImage      = std::shared_ptr<Texture2D>(new Texture2D(playerBitmap, TextureFilter::LINEAR));
+    Transformation              playerTransformation    = Transformation(Vector2f(0.0f, 0.0f), Vector2f(0.16f, 0.16f));
+    std::shared_ptr<Sprite>     player                  = std::shared_ptr<Sprite>(new Sprite(playerTransformation, playerTextureImage));
 
 #ifdef DEBUG
-    std::cout << "OpenGL: " << (const char *)glGetString(GL_VERSION) << std::endl;
+    double   time   = glfwGetTime();
+    uint32_t fps    = 0;
 #endif
 
     while (!glfwWindowShouldClose(window))
@@ -52,13 +84,26 @@ int main(int, const char **)
             glfwSetWindowShouldClose(window, GL_TRUE);
         }
 
-        GLCALL(glClearColor(0.4f, 0.6f, 0.8f, 1.0f));
+        GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
         GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 
         // Render section...
+        spriteRenderer->initiate();
+        spriteRenderer->render(player.get());
+        spriteRenderer->submit();
 
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+#ifdef DEBUG
+        fps++;
+        if (glfwGetTime() - time >= 1.0)
+        {
+            std::cout << "FPS: " << fps << std::endl;
+            fps  = 0;
+            time = glfwGetTime();
+        }
+#endif
     }
 
     glfwMakeContextCurrent(nullptr);

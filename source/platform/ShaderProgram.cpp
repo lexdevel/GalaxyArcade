@@ -5,13 +5,15 @@ ShaderProgram::ShaderProgram(const std::string &vertSource, const std::string &f
     GLuint vertShader = 0;
     GLuint fragShader = 0;
     GLint  status     = 0;
+    const char *vertSourceBuffer = vertSource.data();
+    const char *fragSourceBuffer = fragSource.data();
 
     GLCALL(this->m_identifier = glCreateProgram());
     GLCALL(vertShader = glCreateShader(  GL_VERTEX_SHADER));
     GLCALL(fragShader = glCreateShader(GL_FRAGMENT_SHADER));
 
-    GLCALL(glShaderSource(vertShader, 1, (const GLchar * const *)vertSource.data(), nullptr));
-    GLCALL(glShaderSource(fragShader, 1, (const GLchar * const *)fragSource.data(), nullptr));
+    GLCALL(glShaderSource(vertShader, 1, static_cast<const GLchar * const *>(&vertSourceBuffer), nullptr));
+    GLCALL(glShaderSource(fragShader, 1, static_cast<const GLchar * const *>(&fragSourceBuffer), nullptr));
 
     GLCALL(glCompileShader(vertShader));
     GLCALL(glCompileShader(fragShader));

@@ -1,12 +1,12 @@
 #include "Transformation.h"
 
 Transformation::Transformation()
-    : position(), scale()
+    : position(), size()
 {
 }
 
-Transformation::Transformation(const Vector2f &position, const Vector2f &scale)
-    : position(position), scale(scale)
+Transformation::Transformation(const Vector2f &position, const Vector2f &size)
+    : position(position), size(size)
 {
 }
 
@@ -14,5 +14,5 @@ Matrix Transformation::calculateTransformationMatrix() const
 {
     return Matrix::identity()
             .multiply(Matrix::translate(this->position.x, this->position.y))
-            .multiply(Matrix::scale(this->scale.x, this->scale.y));
+            .multiply(Matrix::scale(this->size.x, this->size.y));
 }

@@ -57,6 +57,7 @@ int main(int argc, const char **argv)
     try
     {
         spriteRenderer = std::shared_ptr<SpriteRenderer>(new SpriteRenderer());
+        spriteRenderer->resize(800, 480);
     }
     catch (const std::runtime_error &ex)
     {

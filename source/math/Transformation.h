@@ -8,10 +8,10 @@ struct Transformation
 {
 public:
     Vector2f position;
-    Vector2f scale;
+    Vector2f size;
 public:
     Transformation();
-    Transformation(const Vector2f &position, const Vector2f &scale);
+    Transformation(const Vector2f &position, const Vector2f &size);
 
     /**
      * @brief Calculate the transformation matrix.

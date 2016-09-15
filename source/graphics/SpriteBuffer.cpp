@@ -24,21 +24,21 @@ SpriteBuffer *SpriteBuffer::instance()
     std::vector<uint32_t> elementArrayData = std::vector<uint32_t>(6);
 
     vertexBufferData[0] = Vector2f(-1.0f,  1.0f);
-    vertexBufferData[0] = Vector2f( 1.0f,  1.0f);
-    vertexBufferData[0] = Vector2f( 1.0f, -1.0f);
-    vertexBufferData[0] = Vector2f(-1.0f, -1.0f);
+    vertexBufferData[1] = Vector2f( 1.0f,  1.0f);
+    vertexBufferData[2] = Vector2f( 1.0f, -1.0f);
+    vertexBufferData[3] = Vector2f(-1.0f, -1.0f);
 
     texelsBufferData[0] = Vector2f(0.0f, 0.0f);
-    texelsBufferData[0] = Vector2f(1.0f, 0.0f);
-    texelsBufferData[0] = Vector2f(1.0f, 1.0f);
-    texelsBufferData[0] = Vector2f(0.0f, 1.0f);
+    texelsBufferData[1] = Vector2f(1.0f, 0.0f);
+    texelsBufferData[2] = Vector2f(1.0f, 1.0f);
+    texelsBufferData[3] = Vector2f(0.0f, 1.0f);
 
     elementArrayData[0] = 0;
-    elementArrayData[0] = 1;
-    elementArrayData[0] = 2;
-    elementArrayData[0] = 2;
-    elementArrayData[0] = 3;
-    elementArrayData[0] = 0;
+    elementArrayData[1] = 1;
+    elementArrayData[2] = 2;
+    elementArrayData[3] = 2;
+    elementArrayData[4] = 3;
+    elementArrayData[5] = 0;
 
     vertexBuffer->bufferData<Vector2f>(vertexBufferData);
     texelsBuffer->bufferData<Vector2f>(texelsBufferData);

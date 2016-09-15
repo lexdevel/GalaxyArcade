@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#define WINDOW_INITIAL_W    800
+#define WINDOW_INITIAL_H    480
+
 /**
  * @brief Application entry point.
  * @param argc Command-line arguments length
@@ -23,9 +26,9 @@ int main(int argc, const char **argv)
     }
 
     glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
-    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+    // glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
-    auto window = glfwCreateWindow(800, 480, "Galaxy Arcade", nullptr, nullptr);
+    auto window = glfwCreateWindow(WINDOW_INITIAL_W, WINDOW_INITIAL_H, "Galaxy Arcade", nullptr, nullptr);
     if (!window) {
         std::cerr << "Error: cannot create window!" << std::endl;
         glfwTerminate();
@@ -50,14 +53,20 @@ int main(int argc, const char **argv)
     GLCALL(glEnable(GL_CULL_FACE));                             // Enable face culling (to draw objects from one side)
     GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
     GLCALL(glCullFace(GL_FRONT));
-    GLCALL(glViewport(0, 0, 800, 480));
+    GLCALL(glViewport(0, 0, WINDOW_INITIAL_W, WINDOW_INITIAL_H));
 
     std::shared_ptr<SpriteRenderer> spriteRenderer;
 
     try
     {
         spriteRenderer = std::shared_ptr<SpriteRenderer>(new SpriteRenderer());
-        spriteRenderer->resize(800, 480);
+        spriteRenderer->resize(WINDOW_INITIAL_W, WINDOW_INITIAL_H);
+
+        glfwSetWindowUserPointer(window, static_cast<void *>(spriteRenderer.get()));
+        glfwSetWindowSizeCallback(window, [](GLFWwindow *window, int32_t w, int32_t h) -> void {
+            auto renderer = static_cast<SpriteRenderer *>(glfwGetWindowUserPointer(window));
+            if (renderer != nullptr) { renderer->resize(static_cast<uint32_t>(w), static_cast<uint32_t>(h)); }
+        });
     }
     catch (const std::runtime_error &ex)
     {
@@ -69,10 +78,10 @@ int main(int argc, const char **argv)
     }
 
     // Load resources...
-    std::shared_ptr<Bitmap>     playerBitmap            = BitmapLoader::load("assets/player.png");
-    std::shared_ptr<Texture2D>  playerTextureImage      = std::shared_ptr<Texture2D>(new Texture2D(playerBitmap, TextureFilter::LINEAR));
-    Transformation              playerTransformation    = Transformation(Vector2f(0.0f, 0.0f), Vector2f(0.16f, 0.16f));
-    std::shared_ptr<Sprite>     player                  = std::shared_ptr<Sprite>(new Sprite(playerTransformation, playerTextureImage));
+    auto playerBitmap            = BitmapLoader::load("assets/player.png");
+    auto playerTextureImage      = std::shared_ptr<Texture2D>(new Texture2D(playerBitmap, TextureFilter::NEAREST));
+    auto playerTransformation    = Transformation(Vector2f(0.0f, 0.0f), Vector2f(0.16f, 0.16f));
+    auto player                  = std::shared_ptr<Sprite>(new Sprite(playerTransformation, playerTextureImage));
 
 #ifdef DEBUG
     double   time   = glfwGetTime();

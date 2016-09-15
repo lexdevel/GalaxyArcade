@@ -58,6 +58,8 @@ SpriteRenderer::~SpriteRenderer()
 
 void SpriteRenderer::resize(uint32_t w, uint32_t h)
 {
+    GLCALL(glViewport(0, 0, w, h));
+
     const float aspect = static_cast<float>(w) / static_cast<float>(h);
     if (w >= h) {
         this->m_projection = Matrix::orthographic(-1.0f * aspect, 1.0f, 1.0f * aspect, -1.0f);

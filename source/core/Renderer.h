@@ -29,6 +29,15 @@ public:
     virtual void resize(uint32_t w, uint32_t h) = 0;
 
     /**
+     * @brief Invalidate (clear) the renderer.
+     * @param r The red color channel
+     * @param g The green color channel
+     * @param b The blue color channel
+     * @param a The alpha color channel
+     */
+    virtual void invalidate(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f) = 0;
+
+    /**
      * @brief Initiate the rendering process.
      * @param initialTransform The initial transformation matrix
      */

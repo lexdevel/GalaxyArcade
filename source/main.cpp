@@ -36,7 +36,10 @@ int main(int argc, const char **argv)
     }
 
     glfwMakeContextCurrent(window);
-    // glfwSwapInterval(1);
+
+#if !defined(DEBUG)
+    glfwSwapInterval(1);    // Enable v-sync
+#endif
 
 #ifdef OS_WIN32
     if (glxwInit() != 0) {
@@ -61,12 +64,6 @@ int main(int argc, const char **argv)
     {
         spriteRenderer = std::shared_ptr<SpriteRenderer>(new SpriteRenderer());
         spriteRenderer->resize(WINDOW_INITIAL_W, WINDOW_INITIAL_H);
-
-        glfwSetWindowUserPointer(window, static_cast<void *>(spriteRenderer.get()));
-        glfwSetWindowSizeCallback(window, [](GLFWwindow *window, int32_t w, int32_t h) -> void {
-            auto renderer = static_cast<SpriteRenderer *>(glfwGetWindowUserPointer(window));
-            if (renderer != nullptr) { renderer->resize(static_cast<uint32_t>(w), static_cast<uint32_t>(h)); }
-        });
     }
     catch (const std::runtime_error &ex)
     {
@@ -77,15 +74,24 @@ int main(int argc, const char **argv)
         return -2;
     }
 
+    glfwSetWindowUserPointer(window, spriteRenderer.get());
+    glfwSetWindowSizeCallback(window, [](GLFWwindow *window, int32_t w, int32_t h) -> void {
+        auto renderer = static_cast<SpriteRenderer *>(glfwGetWindowUserPointer(window));
+        if (renderer != nullptr) {
+            GLCALL(glViewport(0, 0, static_cast<GLsizei>(w), static_cast<GLsizei>(h)));
+            renderer->resize(static_cast<uint32_t>(w), static_cast<uint32_t>(h));
+        }
+    });
+
     // Load resources...
     auto playerBitmap            = BitmapLoader::load("assets/player.png");
-    auto playerTextureImage      = std::shared_ptr<Texture2D>(new Texture2D(playerBitmap, TextureFilter::NEAREST));
+    auto playerTextureImage      = std::shared_ptr<Texture2D>(new Texture2D(playerBitmap, TextureFilter::LINEAR));
     auto playerTransformation    = Transformation(Vector2f(0.0f, 0.0f), Vector2f(0.16f, 0.16f));
     auto player                  = std::shared_ptr<Sprite>(new Sprite(playerTransformation, playerTextureImage));
 
 #ifdef DEBUG
     double   time   = glfwGetTime();
-    uint32_t fps    = 0;
+    uint32_t frames = 0;
 #endif
 
     while (!glfwWindowShouldClose(window))
@@ -94,10 +100,7 @@ int main(int argc, const char **argv)
             glfwSetWindowShouldClose(window, GL_TRUE);
         }
 
-        GLCALL(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
-        GLCALL(glClear(GL_COLOR_BUFFER_BIT));
-
-        // Render section...
+        spriteRenderer->invalidate(0.4f, 0.6f, 0.8f, 1.0f);
         spriteRenderer->initiate();
         spriteRenderer->render(player.get());
         spriteRenderer->submit();
@@ -106,12 +109,12 @@ int main(int argc, const char **argv)
         glfwPollEvents();
 
 #ifdef DEBUG
-        fps++;
+        ++frames;
         if (glfwGetTime() - time >= 1.0)
         {
-            std::cout << "FPS: " << fps << std::endl;
-            fps  = 0;
-            time = glfwGetTime();
+            std::cout << "FPS: " << frames << std::endl;
+            frames  = 0;
+            time    = glfwGetTime();
         }
 #endif
     }

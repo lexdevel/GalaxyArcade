@@ -58,14 +58,19 @@ SpriteRenderer::~SpriteRenderer()
 
 void SpriteRenderer::resize(uint32_t w, uint32_t h)
 {
-    GLCALL(glViewport(0, 0, w, h));
-
+    // GLCALL(glViewport(0, 0, w, h));
     const float aspect = static_cast<float>(w) / static_cast<float>(h);
     if (w >= h) {
         this->m_projection = Matrix::orthographic(-1.0f * aspect, 1.0f, 1.0f * aspect, -1.0f);
     } else {
         this->m_projection = Matrix::orthographic(-1.0f, 1.0f / aspect, 1.0f, -1.0f / aspect);
     }
+}
+
+void SpriteRenderer::invalidate(float r, float g, float b, float a)
+{
+    GLCALL(glClearColor(r, g, b, a));
+    GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 }
 
 void SpriteRenderer::initiate(const Matrix &initialTransform)

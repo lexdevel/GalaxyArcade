@@ -35,6 +35,8 @@ public:
 
     virtual void resize(uint32_t w, uint32_t h)  override;
 
+    virtual void invalidate(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f) override;
+
     virtual void initiate(const Matrix &initialTransform = Matrix::identity()) override;
 
     virtual void render(Renderable *renderable) override;

@@ -38,8 +38,8 @@ SpriteRenderer::SpriteRenderer()
     : Renderer(std::shared_ptr<ShaderProgram>(new ShaderProgram(SpriteRendererShaderSource::vertSource(),
                                                                 SpriteRendererShaderSource::fragSource())))
 {
-    this->m_projection = Matrix::identity();
-    this->m_transformStack.push(Matrix::identity());
+    this->m_projection = glm::mat4(1.0f);
+    this->m_transformStack.push(glm::mat4(1.0f));
 
     this->m_shaderProgram->attach();
 
@@ -58,12 +58,13 @@ SpriteRenderer::~SpriteRenderer()
 
 void SpriteRenderer::resize(uint32_t w, uint32_t h)
 {
-    // GLCALL(glViewport(0, 0, w, h));
+    static const float znear = -1.0f;
+    static const float zfar  =  1.0f;
     const float aspect = static_cast<float>(w) / static_cast<float>(h);
     if (w >= h) {
-        this->m_projection = Matrix::orthographic(-1.0f * aspect, 1.0f, 1.0f * aspect, -1.0f);
+        this->m_projection = glm::ortho(-1.0f * aspect, 1.0f * aspect, 1.0f, -1.0f, znear, zfar);
     } else {
-        this->m_projection = Matrix::orthographic(-1.0f, 1.0f / aspect, 1.0f, -1.0f / aspect);
+        this->m_projection = glm::ortho(-1.0f, 1.0f, 1.0f / aspect, -1.0f / aspect, znear, zfar);
     }
 }
 
@@ -73,15 +74,15 @@ void SpriteRenderer::invalidate(float r, float g, float b, float a)
     GLCALL(glClear(GL_COLOR_BUFFER_BIT));
 }
 
-void SpriteRenderer::initiate(const Matrix &initialTransform)
+void SpriteRenderer::initiate(const glm::mat4 &initialTransform)
 {
     this->m_shaderProgram->attach();
 
     GLCALL(glEnableVertexAttribArray(this->m_shaderParams.a_position));
     GLCALL(glEnableVertexAttribArray(this->m_shaderParams.a_texcoord));
-    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_pvmatrix, 1, GL_FALSE, this->m_projection.data()));
+    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_pvmatrix, 1, GL_FALSE, glm::value_ptr(this->m_projection)));
 
-    this->m_transformStack.push(this->m_transformStack.top().multiply(initialTransform));
+    this->m_transformStack.push(this->m_transformStack.top() * initialTransform);
 }
 
 void SpriteRenderer::render(Renderable *renderable)
@@ -92,8 +93,8 @@ void SpriteRenderer::render(Renderable *renderable)
         return;
     }
 
-    Matrix transformationMatrix = this->m_transformStack.top().multiply(sprite->transformation().calculateTransformationMatrix());
-    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_mvmatrix, 1, GL_FALSE, transformationMatrix.data()));
+    glm::mat4 transformationMatrix = this->m_transformStack.top() * sprite->transformation().calculateTransformationMatrix();
+    GLCALL(glUniformMatrix4fv(this->m_shaderParams.u_mvmatrix, 1, GL_FALSE, glm::value_ptr(transformationMatrix)));
 
     sprite->vertexBuffer()->attach();
     GLCALL(glVertexAttribPointer(this->m_shaderParams.a_position, 2, GL_FLOAT, GL_FALSE, 0, nullptr));

@@ -86,7 +86,7 @@ int main(int argc, const char **argv)
     // Load resources...
     auto playerBitmap            = BitmapLoader::load("assets/player.png");
     auto playerTextureImage      = std::shared_ptr<Texture2D>(new Texture2D(playerBitmap, TextureFilter::LINEAR));
-    auto playerTransformation    = Transformation(Vector2f(0.0f, 0.0f), Vector2f(0.16f, 0.16f));
+    auto playerTransformation    = Transformation(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.16f, 0.16f, 0.0f));
     auto player                  = std::shared_ptr<Sprite>(new Sprite(playerTransformation, playerTextureImage));
 
 #ifdef DEBUG

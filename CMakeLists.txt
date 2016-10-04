@@ -16,7 +16,8 @@ endif()
 
 add_definitions(-DSTB_IMAGE_IMPLEMENTATION) # Define for STB Image
 
-include_directories(vendor/stb/include)
+include_directories(vendor/glm)
+include_directories(vendor/stb)
 include_directories(vendor/glfw/include)
 set(LIBS ${LIBS} -lglfw3)
 
@@ -44,10 +45,7 @@ if (WIN32 AND MINGW)
     set(LIBS ${LIBS} gdi32)
 endif()
 
-set(SOURCE ${SOURCE} source/math/Vector2f.cpp)
-set(SOURCE ${SOURCE} source/math/Matrix.cpp)
 set(SOURCE ${SOURCE} source/math/Transformation.cpp)
-set(SOURCE ${SOURCE} source/math/Rect.cpp)
 
 set(SOURCE ${SOURCE} source/platform/core/PlatformEntity.cpp)
 set(SOURCE ${SOURCE} source/platform/Buffer.cpp)

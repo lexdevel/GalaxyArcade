@@ -1,22 +1,28 @@
 #ifndef TRANSFORMATION_H
 #define TRANSFORMATION_H
 
-#include "Matrix.h"
-#include "Vector2f.h"
+#include <mat4x4.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
+// using namespace glm;
 
+/**
+ * @brief The transformation structure.
+ */
 struct Transformation
 {
 public:
-    Vector2f position;
-    Vector2f size;
+    glm::vec3 position;
+    glm::vec3 rotation;
+    glm::vec3 size;
 public:
     Transformation();
-    Transformation(const Vector2f &position, const Vector2f &size);
+    Transformation(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &size);
 
     /**
      * @brief Calculate the transformation matrix.
      */
-    Matrix calculateTransformationMatrix() const;
+    glm::mat4 calculateTransformationMatrix() const;
 };
 
 #endif // TRANSFORMATION_H

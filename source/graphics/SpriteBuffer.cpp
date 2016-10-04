@@ -19,19 +19,19 @@ SpriteBuffer *SpriteBuffer::instance()
     static std::shared_ptr<VertexBuffer> texelsBuffer = std::shared_ptr<VertexBuffer>(new VertexBuffer());
     static std::shared_ptr<ElementArray> elementArray = std::shared_ptr<ElementArray>(new ElementArray());
 
-    std::vector<Vector2f> vertexBufferData = std::vector<Vector2f>(4);
-    std::vector<Vector2f> texelsBufferData = std::vector<Vector2f>(4);
-    std::vector<uint32_t> elementArrayData = std::vector<uint32_t>(6);
+    std::vector<glm::vec2> vertexBufferData = std::vector<glm::vec2>(4);
+    std::vector<glm::vec2> texelsBufferData = std::vector<glm::vec2>(4);
+    std::vector<uint32_t>  elementArrayData = std::vector<uint32_t>(6);
 
-    vertexBufferData[0] = Vector2f(-1.0f,  1.0f);
-    vertexBufferData[1] = Vector2f( 1.0f,  1.0f);
-    vertexBufferData[2] = Vector2f( 1.0f, -1.0f);
-    vertexBufferData[3] = Vector2f(-1.0f, -1.0f);
+    vertexBufferData[0] = glm::vec2(-1.0f,  1.0f);
+    vertexBufferData[1] = glm::vec2( 1.0f,  1.0f);
+    vertexBufferData[2] = glm::vec2( 1.0f, -1.0f);
+    vertexBufferData[3] = glm::vec2(-1.0f, -1.0f);
 
-    texelsBufferData[0] = Vector2f(0.0f, 0.0f);
-    texelsBufferData[1] = Vector2f(1.0f, 0.0f);
-    texelsBufferData[2] = Vector2f(1.0f, 1.0f);
-    texelsBufferData[3] = Vector2f(0.0f, 1.0f);
+    texelsBufferData[0] = glm::vec2(0.0f, 0.0f);
+    texelsBufferData[1] = glm::vec2(1.0f, 0.0f);
+    texelsBufferData[2] = glm::vec2(1.0f, 1.0f);
+    texelsBufferData[3] = glm::vec2(0.0f, 1.0f);
 
     elementArrayData[0] = 0;
     elementArrayData[1] = 1;
@@ -40,8 +40,8 @@ SpriteBuffer *SpriteBuffer::instance()
     elementArrayData[4] = 3;
     elementArrayData[5] = 0;
 
-    vertexBuffer->bufferData<Vector2f>(vertexBufferData);
-    texelsBuffer->bufferData<Vector2f>(texelsBufferData);
+    vertexBuffer->bufferData<glm::vec2>(vertexBufferData);
+    texelsBuffer->bufferData<glm::vec2>(texelsBufferData);
     elementArray->bufferData<uint32_t>(elementArrayData);
 
     static SpriteBuffer spriteBuffer = SpriteBuffer(vertexBuffer, texelsBuffer, elementArray);

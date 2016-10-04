@@ -1,5 +1,5 @@
 #include "BitmapLoader.h"
-#include <stb_image.h>
+#include <stb/stb_image.h>
 
 std::shared_ptr<Bitmap> BitmapLoader::load(const std::string &path)
 {

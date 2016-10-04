@@ -16,14 +16,12 @@ endif()
 
 add_definitions(-DSTB_IMAGE_IMPLEMENTATION) # Define for STB Image
 
-include_directories(vendor/glm)
-include_directories(vendor/stb)
-include_directories(vendor/glfw/include)
+include_directories(vendor/includes)
 set(LIBS ${LIBS} -lglfw3)
 
 if (UNIX AND APPLE)
     add_definitions(-DOS_APPLE)
-    link_directories(vendor/glfw/lib/macos)
+    link_directories(vendor/libs/macos)
 
     set(LIBS ${LIBS} "-framework OpenGL")
     set(LIBS ${LIBS} "-framework Cocoa")
@@ -34,10 +32,7 @@ endif()
 
 if (WIN32 AND MINGW)
     add_definitions(-DOS_WIN32)
-    link_directories(vendor/glfw/lib/win32)
-
-    include_directories(vendor/glxw/include)
-    link_directories(vendor/glxw/lib/win32)
+    link_directories(vendor/libs/win32)
 
     set(LIBS ${LIBS} glxw)
     set(LIBS ${LIBS} opengl32)

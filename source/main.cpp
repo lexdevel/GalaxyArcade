@@ -26,7 +26,10 @@ int main(int argc, const char **argv)
     }
 
     glfwWindowHint(GLFW_DOUBLEBUFFER, GL_TRUE);
-    // glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+
+#if !defined(DEBUG)
+    glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+#endif
 
     auto window = glfwCreateWindow(WINDOW_INITIAL_W, WINDOW_INITIAL_H, "Galaxy Arcade", nullptr, nullptr);
     if (!window) {

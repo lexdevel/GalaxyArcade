@@ -1,9 +1,9 @@
 #ifndef TRANSFORMATION_H
 #define TRANSFORMATION_H
 
-#include <mat4x4.hpp>
-#include <gtc/matrix_transform.hpp>
-#include <gtc/type_ptr.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 // using namespace glm;
 
 /**

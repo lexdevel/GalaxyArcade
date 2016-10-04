@@ -3,7 +3,7 @@
 
 #include "../platform/VertexBuffer.h"
 #include "../platform/ElementArray.h"
-#include <vec2.hpp>
+#include <glm/vec2.hpp>
 
 /**
  * @brief The sprite buffer class.

@@ -2,7 +2,7 @@
 #define TEXTURE2D_H
 
 #include "core/PlatformEntity.h"
-#include "../core/Bitmap.h"
+#include "../util/Bitmap.h"
 
 enum TextureFilter : GLint {
     LINEAR          = GL_LINEAR,

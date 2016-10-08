@@ -1,5 +1,5 @@
 #include "graphics/SpriteRenderer.h"
-#include "util/BitmapLoader.h"
+#include "util/Bitmap.h"
 #include <GLFW/glfw3.h>
 
 #include <stdlib.h>
@@ -87,9 +87,13 @@ int main(int argc, const char **argv)
     });
 
     // Load resources...
-    auto playerBitmap            = BitmapLoader::load("assets/player.png");
+    auto playerBitmap            = std::shared_ptr<Bitmap>(new Bitmap());
+    if (!playerBitmap->load("assets/player.png")) {
+        std::cerr << "Error: cannot load bitmap!" << std::endl;
+    }
+
     auto playerTextureImage      = std::shared_ptr<Texture2D>(new Texture2D(playerBitmap, TextureFilter::LINEAR));
-    auto playerTransformation    = Transformation(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 90.0f), glm::vec3(0.16f, 0.16f, 0.0f));
+    auto playerTransformation    = Transformation(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.16f, 0.16f, 0.0f));
     auto player                  = std::shared_ptr<Sprite>(new Sprite(playerTransformation, playerTextureImage));
 
 #ifdef DEBUG

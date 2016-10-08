@@ -49,11 +49,11 @@ set(SOURCE ${SOURCE} source/platform/ElementArray.cpp)
 set(SOURCE ${SOURCE} source/platform/Texture2D.cpp)
 set(SOURCE ${SOURCE} source/platform/ShaderProgram.cpp)
 
-set(SOURCE ${SOURCE} source/util/BitmapLoader.cpp)
+set(SOURCE ${SOURCE} source/util/Resource.cpp)
+set(SOURCE ${SOURCE} source/util/Bitmap.cpp)
 
 set(SOURCE ${SOURCE} source/core/Renderable.cpp)
 set(SOURCE ${SOURCE} source/core/Renderer.cpp)
-set(SOURCE ${SOURCE} source/core/Bitmap.cpp)
 
 set(SOURCE ${SOURCE} source/graphics/SpriteBuffer.cpp)
 set(SOURCE ${SOURCE} source/graphics/Sprite.cpp)

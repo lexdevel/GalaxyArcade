@@ -12,9 +12,9 @@
 class Sprite : public Renderable
 {
 private:
-    std::shared_ptr<VertexBuffer>   m_texelsBuffer;
-    std::shared_ptr<Texture2D>      m_textureImage;
     Transformation                  m_transformation;
+    std::shared_ptr<Texture2D>      m_textureImage;
+    std::shared_ptr<VertexBuffer>   m_texelsBuffer;
 public:
     explicit Sprite(const Transformation &transformation,
                     const std::shared_ptr<Texture2D> &textureImage);

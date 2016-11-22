@@ -56,9 +56,9 @@ int main(int argc, const char **argv)
     // Setup OpenGL
     GLCALL(glDisable(GL_DEPTH_TEST));                           // Disable depth test (no need for 2D)
     GLCALL(glEnable(GL_BLEND));                                 // Enable blending (transparency/alpha channel)
-    GLCALL(glEnable(GL_CULL_FACE));                             // Enable face culling (to draw objects from one side)
+    // GLCALL(glEnable(GL_CULL_FACE));                             // Enable face culling (to draw objects from one side)
     GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    GLCALL(glCullFace(GL_FRONT));
+    // GLCALL(glCullFace(GL_BACK));
     GLCALL(glViewport(0, 0, WINDOW_INITIAL_W, WINDOW_INITIAL_H));
 
     std::shared_ptr<SpriteRenderer> spriteRenderer;

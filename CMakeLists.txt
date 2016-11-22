@@ -5,11 +5,13 @@ set(SOURCE)
 set(LIBS)
 
 add_definitions(-std=c++11)
+add_definitions(-Wall -Wextra)       # Display all warnings
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
     add_definitions(-DDEBUG)
     add_definitions(-O0)
 else()
+    add_definitions(-Werror)         # Warning = Error
     add_definitions(-O3)
     add_definitions(-D__NO_INLINE__) # Fix "_hypot" issue with math.h/cmath and -O3 optimization level
 endif()

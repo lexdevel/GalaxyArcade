@@ -104,8 +104,8 @@ void SpriteRenderer::render(Renderable *renderable)
     GLCALL(glVertexAttribPointer(this->m_shaderParams.a_texcoord, 2, GL_FLOAT, GL_FALSE, 0, nullptr));
     sprite->texelsBuffer()->detach();
 
-    sprite->textureImage()->attach();
     GLCALL(glActiveTexture(GL_TEXTURE0));
+    sprite->textureImage()->attach();
     GLCALL(glUniform1i(this->m_shaderParams.u_teximage, 0));
 
     sprite->elementArray()->attach();

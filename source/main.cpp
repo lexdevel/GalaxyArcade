@@ -3,9 +3,6 @@
 #include "util/Bitmap.h"
 #include <GLFW/glfw3.h>
 
-#include <stdlib.h>
-#include <time.h>
-
 #define WINDOW_INITIAL_W    800
 #define WINDOW_INITIAL_H    480
 
@@ -19,7 +16,7 @@ int main(int argc, const char **argv)
     (void) argc;    // Avoid unused parameter warning - argc
     (void) argv;    // Avoid unused parameter warning - argv
 
-    ::srand(static_cast<unsigned>(::time(nullptr))); // Randomize timer...
+    GameTime::randomizeTimer(); // Randomize timer
 
     if (glfwInit() != GL_TRUE) {
         std::cerr << "Error: cannot init glfw!" << std::endl;
@@ -110,25 +107,23 @@ int main(int argc, const char **argv)
 
         static const float upsDelta = 1000.0f / 60.0f;
         static float upsCounter = GameTime::elapsed();
-        upsCounter = GameTime::elapsed();
-        if (upsCounter >= upsDelta)
+
+        upsCounter = GameTime::elapsed() - upsCounter;
+        if (GameTime::elapsed() - upsCounter >= upsDelta)
         {
             if (glfwGetKey(window, GLFW_KEY_LEFT)) {
-                player->transformation().rotation -= 0.4f;
+                player->transformation().rotation -= 0.04f;
             }
 
             if (glfwGetKey(window, GLFW_KEY_RIGHT)) {
-                player->transformation().rotation += 0.4f;
+                player->transformation().rotation += 0.04f;
             }
 
-            /*
             if (glfwGetKey(window, GLFW_KEY_UP)) {
                 auto rads = player->transformation().rotation * static_cast<float>(M_PI / 180.0);
-                player->transformation().position.x += 0.004f * ::cosf(rads);
-                player->transformation().position.y -= 0.004f * ::sinf(rads);
+                player->transformation().position.x -= 0.0004f * ::sinf(rads);
+                player->transformation().position.y += 0.0004f * ::cosf(rads);
             }
-            */
-
 
             upsCounter = GameTime::elapsed();
         }

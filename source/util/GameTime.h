@@ -13,6 +13,11 @@ private:
 public:
 
     /**
+     * @brief Randomize timer.
+     */
+    static void randomizeTimer();
+
+    /**
      * @brief Get the elapsed game time since game started.
      */
     static float elapsed();

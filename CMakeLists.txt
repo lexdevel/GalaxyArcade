@@ -5,13 +5,13 @@ set(SOURCE)
 set(LIBS)
 
 add_definitions(-std=c++11)
-add_definitions(-Wall -Wextra)       # Display all warnings
+add_definitions(-D_USE_MATH_DEFINES)    # Use math definitions (M_PI, etc...)
+add_definitions(-Wall -Wextra -Werror)  # Display all warnings, mark warnings as error
 
 if (CMAKE_BUILD_TYPE STREQUAL Debug)
     add_definitions(-DDEBUG)
     add_definitions(-O0)
 else()
-    add_definitions(-Werror)         # Warning = Error
     add_definitions(-O3)
     add_definitions(-D__NO_INLINE__) # Fix "_hypot" issue with math.h/cmath and -O3 optimization level
 endif()
@@ -42,6 +42,8 @@ if (WIN32 AND MINGW)
     set(LIBS ${LIBS} gdi32)
 endif()
 
+set(SOURCE ${SOURCE} source/math/Vec2.cpp)
+set(SOURCE ${SOURCE} source/math/Matrix.cpp)
 set(SOURCE ${SOURCE} source/math/Transformation.cpp)
 
 set(SOURCE ${SOURCE} source/platform/core/PlatformEntity.cpp)
@@ -51,6 +53,7 @@ set(SOURCE ${SOURCE} source/platform/ElementArray.cpp)
 set(SOURCE ${SOURCE} source/platform/Texture2D.cpp)
 set(SOURCE ${SOURCE} source/platform/ShaderProgram.cpp)
 
+set(SOURCE ${SOURCE} source/util/GameTime.cpp)
 set(SOURCE ${SOURCE} source/util/Resource.cpp)
 set(SOURCE ${SOURCE} source/util/Bitmap.cpp)
 

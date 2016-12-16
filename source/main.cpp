@@ -1,3 +1,4 @@
+#include "util/GameTime.h"
 #include "graphics/SpriteRenderer.h"
 #include "util/Bitmap.h"
 #include <GLFW/glfw3.h>
@@ -56,9 +57,9 @@ int main(int argc, const char **argv)
     // Setup OpenGL
     GLCALL(glDisable(GL_DEPTH_TEST));                           // Disable depth test (no need for 2D)
     GLCALL(glEnable(GL_BLEND));                                 // Enable blending (transparency/alpha channel)
-    // GLCALL(glEnable(GL_CULL_FACE));                             // Enable face culling (to draw objects from one side)
+    GLCALL(glEnable(GL_CULL_FACE));                             // Enable face culling (to draw objects from one side)
     GLCALL(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-    // GLCALL(glCullFace(GL_BACK));
+    GLCALL(glCullFace(GL_BACK));
     GLCALL(glViewport(0, 0, WINDOW_INITIAL_W, WINDOW_INITIAL_H));
 
     std::shared_ptr<SpriteRenderer> spriteRenderer;
@@ -93,11 +94,11 @@ int main(int argc, const char **argv)
     }
 
     auto playerTextureImage      = std::shared_ptr<Texture2D>(new Texture2D(playerBitmap, TextureFilter::LINEAR));
-    auto playerTransformation    = Transformation(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.16f, 0.16f, 0.0f));
+    auto playerTransformation    = Transformation(Vec2(0.0f, 0.0f), 0.0f, Vec2(0.16f, 0.16f));
     auto player                  = std::shared_ptr<Sprite>(new Sprite(playerTransformation, playerTextureImage));
 
 #ifdef DEBUG
-    double   time   = glfwGetTime();
+    float    time   = GameTime::elapsed();
     uint32_t frames = 0;
 #endif
 
@@ -105,6 +106,31 @@ int main(int argc, const char **argv)
     {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
             glfwSetWindowShouldClose(window, GL_TRUE);
+        }
+
+        static const float upsDelta = 1000.0f / 60.0f;
+        static float upsCounter = GameTime::elapsed();
+        upsCounter = GameTime::elapsed();
+        if (upsCounter >= upsDelta)
+        {
+            if (glfwGetKey(window, GLFW_KEY_LEFT)) {
+                player->transformation().rotation -= 0.4f;
+            }
+
+            if (glfwGetKey(window, GLFW_KEY_RIGHT)) {
+                player->transformation().rotation += 0.4f;
+            }
+
+            /*
+            if (glfwGetKey(window, GLFW_KEY_UP)) {
+                auto rads = player->transformation().rotation * static_cast<float>(M_PI / 180.0);
+                player->transformation().position.x += 0.004f * ::cosf(rads);
+                player->transformation().position.y -= 0.004f * ::sinf(rads);
+            }
+            */
+
+
+            upsCounter = GameTime::elapsed();
         }
 
         spriteRenderer->invalidate(0.4f, 0.6f, 0.8f, 1.0f);
@@ -117,11 +143,11 @@ int main(int argc, const char **argv)
 
 #ifdef DEBUG
         ++frames;
-        if (glfwGetTime() - time >= 1.0)
+        if (GameTime::elapsed() - time >= 1000.0f)
         {
             std::cout << "FPS: " << frames << std::endl;
             frames  = 0;
-            time    = glfwGetTime();
+            time    = GameTime::elapsed();
         }
 #endif
     }

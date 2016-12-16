@@ -1,10 +1,8 @@
 #ifndef TRANSFORMATION_H
 #define TRANSFORMATION_H
 
-#include <glm/mat4x4.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-// using namespace glm;
+#include "Matrix.h"
+#include "Vec2.h"
 
 /**
  * @brief The transformation structure.
@@ -12,17 +10,17 @@
 struct Transformation
 {
 public:
-    glm::vec3 position;
-    glm::vec3 rotation;
-    glm::vec3 size;
+    Vec2    position;
+    float   rotation;
+    Vec2    scale;
 public:
-    Transformation();
-    Transformation(const glm::vec3 &position, const glm::vec3 &rotation, const glm::vec3 &size);
+    explicit Transformation();
+    explicit Transformation(const Vec2 &position, float rotation = 0.0f, const Vec2 &scale = Vec2(1.0f, 1.0f));
 
     /**
      * @brief Calculate the transformation matrix.
      */
-    glm::mat4 calculateTransformationMatrix() const;
+    Matrix calculateTransformationMatrix() const;
 };
 
 #endif // TRANSFORMATION_H

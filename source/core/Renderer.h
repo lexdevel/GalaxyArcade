@@ -41,7 +41,7 @@ public:
      * @brief Initiate the rendering process.
      * @param initialTransform The initial transformation matrix
      */
-    virtual void initiate(const glm::mat4 &initialTransform = glm::mat4(1.0f)) = 0;
+    virtual void initiate(const Matrix &initialTransform = Matrix::identity()) = 0;
 
     /**
      * @brief Render the specified renderable.

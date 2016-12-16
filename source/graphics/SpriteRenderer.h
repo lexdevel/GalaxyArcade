@@ -27,8 +27,8 @@ class SpriteRenderer : public Renderer
 {
 private:
     SpriteRendererShaderParams  m_shaderParams;
-    glm::mat4                   m_projection;
-    std::stack<glm::mat4>       m_transformStack;
+    Matrix                      m_projection;
+    std::stack<Matrix>          m_transformStack;
 public:
     explicit SpriteRenderer();
     virtual ~SpriteRenderer();
@@ -37,7 +37,7 @@ public:
 
     virtual void invalidate(float r = 0.0f, float g = 0.0f, float b = 0.0f, float a = 1.0f) override;
 
-    virtual void initiate(const glm::mat4 &initialTransform = glm::mat4(1.0f)) override;
+    virtual void initiate(const Matrix &initialTransform = Matrix::identity()) override;
 
     virtual void render(Renderable *renderable) override;
 
